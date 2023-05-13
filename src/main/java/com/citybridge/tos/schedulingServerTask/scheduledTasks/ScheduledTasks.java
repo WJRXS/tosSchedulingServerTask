@@ -20,9 +20,14 @@ public class ScheduledTasks {
         this.taskService = taskService;
     }
 
+    /**
+     * Execute Task service every 5 seconds (minutes)
+     *
+     *
+     */
     @Scheduled(fixedRate = 5_000) //(fixedRate = 300_000)
     public void reportCurrentTime() {
-        taskService.Task();
+        taskService.task();
     }
 }
 
