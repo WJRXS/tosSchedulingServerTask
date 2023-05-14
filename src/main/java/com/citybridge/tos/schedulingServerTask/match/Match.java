@@ -1,6 +1,6 @@
 package com.citybridge.tos.schedulingServerTask.match;
 
-import com.citybridge.tos.schedulingServerTask.MatchMaker.MatchMaker;
+import com.citybridge.tos.schedulingServerTask.MatchRound.MatchRound;
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,11 @@ import java.util.List;
 @Service
 public class Match {
 
-     private final MatchMaker matchMaker;
+     private final MatchRound matchRound;
 
      @Autowired
-     public Match(MatchMaker matchmaker) {
-         this.matchMaker = matchmaker;
+     public Match(MatchRound matchmaker) {
+         this.matchRound = matchmaker;
      }
 
 
@@ -53,7 +53,7 @@ public class Match {
          * players assigned to bench
          * List [playerId][CourtId][Position][Roll]  CourtId -1 = benched    Position: 1234 (13vs24)
          */
-        List<Player> assignedPlayerList = matchMaker.executeMatchMaker(eventVariables, playerList, courtList);
+   //     List<Player> assignedPlayerList = matchRound.executeMatchMaker(eventVariables, playerList, courtList);
 
         /** ----- 3 -----
          * Fill the database with

@@ -1,7 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.scheduledTasks;
 
 import com.citybridge.tos.schedulingServerTask.Event.EventActivation;
-import com.citybridge.tos.schedulingServerTask.MatchMaker.MatchMaker;
+import com.citybridge.tos.schedulingServerTask.MatchRound.MatchRound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import java.util.List;
 @Service
 public class TaskService {
     private final EventActivation eventActivation;
-    private final MatchMaker matchMaker;
+    private final MatchRound matchRound;
 
     @Autowired
-    public TaskService(EventActivation eventActivation, MatchMaker matchmaker) {
+    public TaskService(EventActivation eventActivation, MatchRound matchmaker) {
         this.eventActivation = eventActivation;
-        this.matchMaker = matchmaker;
+        this.matchRound = matchmaker;
     }
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -88,7 +88,7 @@ public class TaskService {
          * create Matches for the MatchRound.
          */
         if (!matchRoundList.isEmpty()) {
-            matchMaker.makeMatchRound(matchRoundList);
+            matchRound.createMatchRoundList(matchRoundList);
         }
     }
 

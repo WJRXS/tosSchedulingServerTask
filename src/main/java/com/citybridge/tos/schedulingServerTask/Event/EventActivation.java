@@ -9,19 +9,13 @@ import java.util.List;
 @Service
 public class EventActivation {
 
- //   private final ScheduleMatchRound scheduleMatchRound;
 
-//    @Autowired
-  //  public EventActivation(ScheduleMatchRound scheduleMatchRound) {
-  //      this.scheduleMatchRound = scheduleMatchRound;
-//    }
 
-    private Event dummyEvent = new Event(1L, LocalDateTime.of(2023, 5, 10, 19, 30), 4, 30L);
 
     /**
-     * activate event method
+     * activate all the event in the eventIdList
      *
-     * schedule extra tasks and set event to activated.
+     *
      */
     public void activateEventList(List<Long> eventIdList) {
              for (Long eventId: eventIdList) {
@@ -30,13 +24,18 @@ public class EventActivation {
  }
 
 
-
-
+    /**
+     * activate event
+     * create match rounds in database for the event.
+     * set event to activated.
+     * @param eventId
+     */
     private void activateEvent(Long eventId) {
         Event event = getEvent(eventId);
 
         setEventToActive(eventId);
         createMatchRound(event);
+
      }
 
 
@@ -52,12 +51,20 @@ public class EventActivation {
      */
     private Event getEvent(Long eventId) {
         Long dummy = eventId;
+        Event dummyEvent = new Event(
+                1L,
+                LocalDateTime.of(2023, 5, 10, 19, 30),
+                4,
+                30L,
+                5L
+        );
+
         return dummyEvent;
     }
 
     /**
      * Method contacts DATABASE with eventId, and modifies database; active YES
-     * @param event
+     * @param eventId
      * #TODO TRANSACTIONAL method.
      */
     private void setEventToActive(Long eventId) {
@@ -94,32 +101,10 @@ public class EventActivation {
 
     }
 
-
-
-    private void sheduleMatchMaker(Event event) {
-        /**
-         * #TODO create announce timer in database
-         */
-        long eventAnnounceTime = 5;
-        Long eventId = event.getEventId();
-        int nrOfCycles = event.getNrOfCycles();
-        LocalDateTime startDateTime = event.getStartDateTime();
-        Long cycleDurationMinutes = event.getCycleDurationMinutes();
-
-
-        /**
-         * for each round, schedule a match maker.
-         * matchCreatTIme is a few minutes (eventAnnounceTime) before the actual start of the match round.
-         */
-        for (int i=1; i <= nrOfCycles; i++) {
-           LocalDateTime matchCreateTime = startDateTime.plusMinutes(i*cycleDurationMinutes - eventAnnounceTime);
-        int roundNr = i;
-   //     scheduleMatchRound.scheduleMatchRound(eventId, matchCreateTime, roundNr);
-   }
-
-
-    }
-
+    /**
+     * #TODO contacts all players who are signed up for the event.
+     * @param eventId
+     */
     private void notifyClients(Long eventId) {
 
     }
