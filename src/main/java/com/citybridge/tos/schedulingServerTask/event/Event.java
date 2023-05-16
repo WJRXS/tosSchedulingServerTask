@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.Event;
+package com.citybridge.tos.schedulingServerTask.event;
 
 import java.time.LocalDateTime;
 
