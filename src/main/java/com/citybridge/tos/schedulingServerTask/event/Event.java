@@ -10,6 +10,60 @@ public class Event {
     private Long cycleDurationMinutes;
     private Long announceTime;
 
+    // Lottery Settings:
+    private int benchCompensation = 1000;
+    private int newPlayersPlayImmediately = 0;  // = 2000 when turned on.
+    private int leftoverMatchCompensation = 200; // can be set from 0-1000 as if benched.
+
+    public int getBenchCompensation() {
+            return benchCompensation;
+        }
+
+        public void setBenchCompensation(int benchCompensation) {
+        // #todo control 0-1000
+            this.benchCompensation = benchCompensation;
+        }
+
+        public int getNewPlayersPlayImmediately() {
+
+            return newPlayersPlayImmediately;
+        }
+
+        public void setNewPlayersPlayImmediately(int newPlayersPlayImmediately) {
+            // #todo control 0 OR 2000
+            this.newPlayersPlayImmediately = newPlayersPlayImmediately;
+        }
+
+        public int getLeftoverMatchCompensation() {
+            return leftoverMatchCompensation;
+    }
+
+    public void setLeftoverMatchCompensation(int leftoverMatchCompensation) {
+        // #todo control 0-1000
+        this.leftoverMatchCompensation = leftoverMatchCompensation;
+    }
+
+    public TosType getTosType() {
+        return tosType;
+    }
+
+    public void setTosType(TosType tosType) {
+        this.tosType = tosType;
+    }
+
+    public int getMixVersusStraight() {
+        return mixVersusStraight;
+    }
+
+    public void setMixVersusStraight(int mixVersusStraight) {
+        this.mixVersusStraight = mixVersusStraight;
+    }
+
+    // Type of TOS setting
+    private TosType tosType = TosType.DOUBLE;  // focus on double.
+    private int mixVersusStraight = 0; // 0 most mix matches, 100 for most straight matches.
+
+
     public Event() {
     }
 

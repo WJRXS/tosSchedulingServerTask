@@ -1,7 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.matchRound;
 
 import com.citybridge.tos.schedulingServerTask.event.Event;
-import com.citybridge.tos.schedulingServerTask.match.MatchMaker;
+import com.citybridge.tos.schedulingServerTask.matchMaker.MatchMaker;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +48,7 @@ public class MatchRoundService {
         // the playerId who have signed up for the event. get from DATABASE [SIGNUP]
         // get players from DATABASE [PLAYER]
         List<Player> playerList = getSigneddUpPlayersList(eventId);
+
 
         // call matchmaker to create the matches
         matchMaker.createMatch(event, courtList, playerList);
