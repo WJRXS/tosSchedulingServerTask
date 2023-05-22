@@ -1,11 +1,18 @@
 package com.citybridge.tos.schedulingServerTask.player;
 
-public class Player {
+public class Player { //} implements Comparable<Player>{
 
     private Long playerId;
     private double playerStrength;
-    private boolean Benched;
 
+    private boolean benched;
+
+    // more elegant procedure: Long lastPlayedEvent = x. cross check this with event and you know if player has played
+    // a match this event.
+    private boolean hasNotPlayedAMatchThisTos;
+
+    private boolean hasPlayedLeftOverMatch;
+    private int roll = 0;
 
     public Player() {
     }
@@ -13,7 +20,36 @@ public class Player {
     public Player(Long playerId, double playerStrength, boolean benched) {
         this.playerId = playerId;
         this.playerStrength = playerStrength;
-        Benched = benched;
+        this.benched = benched;
+    }
+
+ //   @Override
+ //   public int compareTo(Player anotherPlayer) {
+  //      return this.roll.compareTo(anotherPlayer.getRoll());
+ //   }
+
+    public boolean isHasNotPlayedAMatchThisTos() {
+        return hasNotPlayedAMatchThisTos;
+    }
+
+    public void setHasNotPlayedAMatchThisTos(boolean hasNotPlayedAMatchThisTos) {
+        this.hasNotPlayedAMatchThisTos = hasNotPlayedAMatchThisTos;
+    }
+
+    public boolean isHasPlayedLeftOverMatch() {
+        return hasPlayedLeftOverMatch;
+    }
+
+    public void setHasPlayedLeftOverMatch(boolean hasPlayedLeftOverMatch) {
+        this.hasPlayedLeftOverMatch = hasPlayedLeftOverMatch;
+    }
+
+    public int getRoll() {
+        return roll;
+    }
+
+    public void setRoll(int roll) {
+        this.roll = roll;
     }
 
     public Long getPlayerId() {
@@ -33,10 +69,10 @@ public class Player {
     }
 
     public boolean isBenched() {
-        return Benched;
+        return benched;
     }
 
     public void setBenched(boolean benched) {
-        Benched = benched;
+        this.benched = benched;
     }
 }

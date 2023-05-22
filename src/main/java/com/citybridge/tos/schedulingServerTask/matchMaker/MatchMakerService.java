@@ -1,6 +1,67 @@
-package com.citybridge.tos.schedulingServerTask.match;
+package com.citybridge.tos.schedulingServerTask.matchMaker;
 
+import com.citybridge.tos.schedulingServerTask.event.Event;
+import com.citybridge.tos.schedulingServerTask.lottery.AssignedPlayer;
+import com.citybridge.tos.schedulingServerTask.lottery.Lottery;
+import com.citybridge.tos.schedulingServerTask.player.Player;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@Service
 public class MatchMakerService {
+
+    private final Lottery lottery;
+
+    @Autowired
+    public MatchMakerService(Lottery lottery) { this.lottery = lottery;}
+
+
+    public List<AssignedPlayer> getAssignedPlayerList(Event event, List<Long> courtIdList, List<Player> playerList) {
+
+
+        /** ---- 1A----- Lottery
+         * add roll to players
+         * sort list comparable to roll.
+         */
+
+        lottery.addRoll(playerList, event);
+
+
+        /**
+         *  --- 1B -------------
+         *  check for surplus and sexes.
+         *
+         *  divide into playerlist & trash list.
+         *
+         *  next try to convert playerlist into assigned player, and use trash list for leftover fixes.
+         *
+         *  last:
+         *  make assigned playerlist solid, and turn trash list into bench list.
+         *
+         *  next create the assignedplayer list.
+         */
+
+
+
+
+        /** ---- 2 -----
+         * Puts all these variables into the matchMakerService
+         * that returns:
+         * players assigned to courts
+         * players assigned to bench
+         * List [playerId][CourtId][Position][Roll]  CourtId -1 = benched    Position: 1234 (13vs24)
+         * List [Long][Long][int][int]
+         * returns List<AssignedPlayer>
+         */
+        List<AssignedPlayer> assignedPlayerList = new ArrayList<>();
+        return assignedPlayerList;
+    }
+
+
 
     /**
      * When there are more players then courts available, low roll players will be
@@ -18,13 +79,13 @@ public class MatchMakerService {
      * odd total players. If there is 1 female/male leftover, the lowest sex roll
      * will be benched in processing.
      *
-     * If there are 3 leftovers, there is no bench to fill a 3 player Mexican to a
+     * If there are 3 leftovers, there is no bench , to fill a 3 player Mexican to a
      * 4man double. and thus a 3 man match will be assigned to the single court.
      */
 
 
     // EVENT SETTINGS
-            // bench gives roll bonus of XXX
+    // bench gives roll bonus of XXX
 
     private int oneTimeCompensationForHavingPlayedALeftOverMatch = 0;//500;// MATCH SETTING set by [ORGANIZER] , set to 0 to
     // turn off.
