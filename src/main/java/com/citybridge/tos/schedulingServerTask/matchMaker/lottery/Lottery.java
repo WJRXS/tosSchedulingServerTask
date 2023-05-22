@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.lottery;
+package com.citybridge.tos.schedulingServerTask.matchMaker.lottery;
 
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.player.Player;

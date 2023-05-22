@@ -6,7 +6,7 @@ public class Player { //} implements Comparable<Player>{
     private double playerStrength;
 
     private boolean benched;
-
+    private boolean maleSex;
     // more elegant procedure: Long lastPlayedEvent = x. cross check this with event and you know if player has played
     // a match this event.
     private boolean hasNotPlayedAMatchThisTos;
@@ -17,10 +17,11 @@ public class Player { //} implements Comparable<Player>{
     public Player() {
     }
 
-    public Player(Long playerId, double playerStrength, boolean benched) {
+    public Player(Long playerId, double playerStrength, boolean benched, boolean maleSex) {
         this.playerId = playerId;
         this.playerStrength = playerStrength;
         this.benched = benched;
+        this.maleSex = maleSex;
     }
 
  //   @Override
@@ -74,5 +75,9 @@ public class Player { //} implements Comparable<Player>{
 
     public void setBenched(boolean benched) {
         this.benched = benched;
+    }
+
+    public boolean isMaleSex() {
+        return maleSex;
     }
 }

@@ -1,9 +1,10 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker;
 
 import com.citybridge.tos.schedulingServerTask.event.Event;
-import com.citybridge.tos.schedulingServerTask.lottery.AssignedPlayer;
-import com.citybridge.tos.schedulingServerTask.lottery.Lottery;
+import com.citybridge.tos.schedulingServerTask.matchMaker.lottery.AssignedPlayer;
+import com.citybridge.tos.schedulingServerTask.matchMaker.lottery.Lottery;
 import com.citybridge.tos.schedulingServerTask.player.Player;
+import com.citybridge.tos.schedulingServerTask.player.PlayerListChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,13 @@ import java.util.List;
 public class MatchMakerService {
 
     private final Lottery lottery;
+    private final PlayerListChecker playerListChecker;
 
     @Autowired
-    public MatchMakerService(Lottery lottery) { this.lottery = lottery;}
+    public MatchMakerService(Lottery lottery, PlayerListChecker playerListChecker) {
+        this.lottery = lottery;
+        this.playerListChecker = playerListChecker;
+    }
 
 
     public List<AssignedPlayer> getAssignedPlayerList(Event event, List<Long> courtIdList, List<Player> playerList) {
@@ -34,7 +39,16 @@ public class MatchMakerService {
         /**
          *  --- 1B -------------
          *  check for surplus and sexes.
-         *
+         */
+
+        List<Player> playerBinList = playerListChecker.checkForBadConfiguration(playerList, courtIdList.size());
+
+
+
+
+
+
+         /**
          *  divide into playerlist & trash list.
          *
          *  next try to convert playerlist into assigned player, and use trash list for leftover fixes.
@@ -44,6 +58,7 @@ public class MatchMakerService {
          *
          *  next create the assignedplayer list.
          */
+
 
 
 
@@ -82,6 +97,11 @@ public class MatchMakerService {
      * If there are 3 leftovers, there is no bench , to fill a 3 player Mexican to a
      * 4man double. and thus a 3 man match will be assigned to the single court.
      */
+
+
+
+
+
 
 
     // EVENT SETTINGS
