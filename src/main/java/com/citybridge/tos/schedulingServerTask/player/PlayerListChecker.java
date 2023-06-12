@@ -1,7 +1,6 @@
 package com.citybridge.tos.schedulingServerTask.player;
 
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,14 +12,12 @@ public class PlayerListChecker {
     List<Player> playerBinList;
     int nrOfCourts;
 
-
         public List<Player> checkForBadConfiguration(List<Player> playerList, int nrOfCourts) {
             this.playerList = playerList;
             this.nrOfCourts = nrOfCourts;
 
             int nrOfPlayers = playerList.size();
             int maxNrOfPlayers = nrOfCourts * 4;
-
 
             // if too many players
             if (nrOfPlayers > maxNrOfPlayers) {
@@ -38,20 +35,13 @@ public class PlayerListChecker {
             return playerBinList;
     }
 
-
-
-
-
-
-
-
     private void moveSurplusPlayersToTrashBin() {
         /**
          * #TODO Check if you have even number of sexes. put the removed player rolls in
          * a trash bin if sexes are uneven, check1 what sex is bottom list? is there an
          * opposite sex available in the trash bin? yes -> remove bottom list, and add
          * highest roll opposite wanted sex to make good. no -> what sex is bottom
-         * list+1 --> is in trash bin? -- yes done no -> bottom list+2 exception: 1
+         * list+1 --> is in trash bin? -- yes done, no -> bottom list+2 exception: 1
          * woman? she'll always be removed. lets make a safety. if just benched, you can
          * never be removed.
          *
@@ -67,8 +57,6 @@ public class PlayerListChecker {
         int maxPlayersIndex = (nrOfCourts * 4) - 1; // 10*4 = 40 -1 = 39
         int sizeIndex = playerList.size() - 1; // size 42 -1 = 41, en dan gaan er dus 2 players, op i = 41 en i = 40, de trashbin in?
 
-
-
         for (int i = sizeIndex; i > maxPlayersIndex; i--) {
             System.out.println(
                     "removing " + playerList.get(i).getPlayerId() + " with roll: " + playerList.get(i).getRoll());
@@ -82,7 +70,6 @@ public class PlayerListChecker {
                 return p1.getRoll() > p2.getRoll() ? -1 : p1.getRoll() == p2.getRoll() ? 0 : 1;
             }
     });
-
 }
 
     private void fixBadSexDistribution() {
@@ -249,11 +236,11 @@ public class PlayerListChecker {
         } else if (nrOfFemalesCounter % 2 == 1) {
             System.out.println("trying to remove leftover 1 with sex isMale = false");
             for (int i = sizeIndex; i > 0; i--) {
-                if (signUpList.get(i).getIsSexMale() == false) {
-                    System.out.println("removing leftover 1 " + signUpList.get(i).getNumber() + " with roll: "
-                            + signUpList.get(i).getRoll() + " and sex isMale =" + signUpList.get(i).getIsSexMale());
-                    benchedPlayerList.add(signUpList.get(i));
-                    signUpList.remove(i);
+                if (playerList.get(i).isMaleSex() == false) {
+                    System.out.println("removing leftover 1 " + playerList.get(i).getPlayerId() + " with roll: "
+                            + playerList.get(i).getRoll() + " and sex isMale =" + playerList.get(i).isMaleSex());
+                    playerBinList.add(playerList.get(i));
+                    playerList.remove(i);
                     break;
                 }
             }

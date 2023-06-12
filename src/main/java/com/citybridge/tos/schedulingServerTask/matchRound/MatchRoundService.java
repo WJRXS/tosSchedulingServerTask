@@ -138,7 +138,7 @@ private List<Player> getSigneddUpPlayersList(Long eventId) {
      */
 private Player getPlayer(Long playerId) {
     Long dummyPlayerId = playerId;
-    Player player = new Player(1L, 8.0, false);
+    Player player = new Player(1L, 8.0, false, false);
     return player;
  }
 

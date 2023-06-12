@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.matchMaker.lottery;
+package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts;
 
 public class AssignedPlayer {
 

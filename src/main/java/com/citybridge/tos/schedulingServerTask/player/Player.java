@@ -7,6 +7,7 @@ public class Player { //} implements Comparable<Player>{
 
     private boolean benched;
     private boolean maleSex;
+
     // more elegant procedure: Long lastPlayedEvent = x. cross check this with event and you know if player has played
     // a match this event.
     private boolean hasNotPlayedAMatchThisTos;

@@ -1,7 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker;
 
 import com.citybridge.tos.schedulingServerTask.event.Event;
-import com.citybridge.tos.schedulingServerTask.matchMaker.lottery.AssignedPlayer;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
