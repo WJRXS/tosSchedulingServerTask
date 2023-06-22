@@ -1,65 +1,48 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts;
 
+import com.citybridge.tos.schedulingServerTask.court.Court;
+import com.citybridge.tos.schedulingServerTask.event.Event;
+import com.citybridge.tos.schedulingServerTask.event.TosType;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.singleMatch.SingleMatchCreator;
+import com.citybridge.tos.schedulingServerTask.player.Player;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- *  --- 1B -------------
- *  check for surplus and sexes.
- *
- *  divide into playerlist & trash list.
- *
- *  next try to convert playerlist into assigned player, and use trash list for leftover fixes.
- *
- *  last:
- *  make assigned playerlist solid, and turn trash list into bench list.
- *
- *  next create the assignedplayer list.
- */
+
 
 @Service
 public class AssignPlayersToCourts {
 
+    private final SingleMatchCreator singleMatchCreator;
 
+    @Autowired
+    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator) {
+        this.singleMatchCreator = singleMatchCreator;
+    }
 
 
     /**
-     * Split the signed up players into
-     * - player who are playing.
-     * - players who are benched.
-     *
+     * Action I:
      * Many factors have to be considered.
      * first of all what kind of TOS?
-     * Only setting for now, will be [Double Matches, both mixed sex and same sex].
-     *
-     * Action I:
-     * Load event settings
-     *
+     TosType tosType =
+
      * Action II:
-     * all players get an integer lottery Roll.
+     * Load event settings
+     * what %MIX has the organiser set? does the organiser want as many mixes as pissible (100%)?
+     * or the most straight matches (0 %)
      *
-     * Action III:
-     * a) fill all available spots with the highest rolls.
-     * (assignedPlayerList)
-     * b) if leftover, then they go into the (reservePlayerList).
+     *
      *
      * Check1:
      * 1A) courts => players?
-     * Create Matches, Fill courts with double, until 3 (mexican),  2 (single), 1 (bench) players are left.
-     * leftovers sex is not considered.
+     * Create Matches, Fill courts with double, until 3 (mexican),  2 (single) players are left.
      *
-     * 1B) courts < players?
-     * there will be a bench.
-     * When there are more players then courts available, low roll players will be
-     * benched. Allowances are made so abit higher rolls might be benched for the
-     * greater cause: male / female distribution.
-     *
-     * Check sex distribution.
-     *
-     *
+
      *      * female/male divisions: The Double matches have priority, and thus if needed,
      *      * the single will consist out of a man and a female: BattleOfTheSexes.
      *      *
@@ -72,17 +55,144 @@ public class AssignPlayersToCourts {
      *
      */
 
-    public List<AssignedPlayer> getAssignedPlayersToCourtsList() {
-
-
-
+    public List<AssignedPlayer> getAssignedPlayersToCourtsList(Event event, List<Court> courtIdList, List<Player> playerList, List<Player> playerBinList) {
         List<AssignedPlayer> assignedPlayersToCourtsList = new ArrayList<AssignedPlayer>();
+
+        TosType tosType = event.getTosType();
+
+        /**
+         * Check 0
+         */
+        createLeftOverMatch(event, playerList);
+
+
+        List<TypeOfMatch> typeOfMatchList = createTypeOfMatchList(event, playerList);
+
+
+
+
+
         return assignedPlayersToCourtsList;
         }
     }
 
-}
 
+    /**
+     * --------------------   CREATE COURT LIST --------------
+     * #TODO only tosType setting = DOUBLE
+     * @param event
+     *
+     *
+     * Step by Step by Step plan given variables:
+     *  number of Players (dont need nr of courts, you know that when you look at nr players)
+     *
+     *  CHeck0: LEFTOVER MATCH
+     *  - Single / Mexican
+     *  - assign players
+     *  (add assigned players, add assigned courts?)
+     *  (remove from lists: court id, playerid )
+     *
+     *
+     *
+     *
+     *  Check0_1: is there going to be a SINGLE match?
+     *  if [single court] go through list who wants to play single. -> make list ->
+     *  highest gets +if friends who wants single +else similar strength.
+     *  if none found --> bottom roll gets single. get sex. get partner = same sex &
+     *  similarstrength and semi-low roll.
+     *
+     *  Check0_2: is there going to be a MEXICAN match?
+     *
+     *
+     *  Check3: Mix or same Sex Matchsettings [Mix]-[Same Sex] % get lowest number
+     *  from list - woman or men. max mix courts = number /2 number of mix courts =
+     *  max number of mix courts * % same sex courts = nrofcourts - mix courts
+     *  courtlist[] = add same sex - add mix --add same sex -- add mix --add same sex
+     *  --->untill both are at zero.
+     *
+     *  check 3 first court same sex: Highest roll & wants to do court type: Does
+     *  player have mutual friends. add highest roll friend as opponent or partner.
+     *
+     *  No mutual friends: friends - strength %roll
+     */
+
+    private void createLeftOverMatch(Event event, List<Player> playerList) {
+
+
+        int nrOfPlayers = playerList.size();
+        int leftover = nrOfPlayers%4;
+
+
+        if(leftover == 1) {
+            //throw exception
+        } else if(leftover == 2) {
+            // SINGLE
+            singleMatchCreator.createSingleMatch(playerList);
+
+        } else if (leftover == 3) {
+            // MEXICAN
+           createMexicanMatch();
+        } else if (leftover == 0 | leftover == 4) {
+            // nothing
+        } else {
+            // throw exception
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+    private void createMexicanMatch(List<Player> playerList) {
+
+    }
+
+
+
+    private List<TypeOfMatch> createTypeOfMatchList(Event event, List<Player> playerList) {     //old createCourtList
+
+
+        int courtCounter = 1;
+        List<TypeOfMatch> typeOfMatchList = new ArrayList<>();
+
+        int nrOfPlayers = playerList.size();
+        int leftover = nrOfPlayers%4;
+
+
+        if(leftover == 1) {
+            //throw exception
+        } else if(leftover == 2) {
+            // SINGLE
+            typeOfMatchList.add(TypeOfMatch.SINGLE);
+
+        } else if (leftover == 3) {
+            // MEXICAN
+            typeOfMatchList.add(TypeOfMatch.MEXICAN);
+        } else if (leftover == 0 | leftover ==4) {
+
+             } else {
+            // throw exception
+           }
+
+        int nrOfDoubleMatches = (int) (nrOfPlayers / 4); //#TODO check for rounding problems
+
+
+    if(tosType == TosType.DOUBLE) {
+
+
+
+    }
+    return typeOfMatchList;
+ }
+
+
+
+        }
 
 /**
  * #TODO incorporate settings

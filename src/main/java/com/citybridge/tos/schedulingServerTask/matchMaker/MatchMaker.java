@@ -1,5 +1,6 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker;
 
+import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
 import com.citybridge.tos.schedulingServerTask.player.Player;
@@ -19,7 +20,7 @@ public class MatchMaker {
     }
 
 
-    public void createMatch(Event event, List<Long> courtIdList, List<Player> playerList) {
+    public void createMatch(Event event, List<Court> courtIdList, List<Player> playerList) {
 // #TODO
 
 

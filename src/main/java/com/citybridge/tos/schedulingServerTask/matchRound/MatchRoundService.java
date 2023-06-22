@@ -1,5 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.matchRound;
 
+import com.citybridge.tos.schedulingServerTask.court.Court;
+import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.MatchMaker;
 import com.citybridge.tos.schedulingServerTask.player.Player;
@@ -43,7 +45,7 @@ public class MatchRoundService {
         Event event = getEventFromEVENT(eventId);
 
         // the available courts where apon players can be assigned, get from DATABASE [COURTSAVAILABLE]
-        List<Long> courtList = getAvailableCourtList(eventId, roundNr);
+        List<Court> courtList = getAvailableCourtList(eventId, roundNr);
 
         // the playerId who have signed up for the event. get from DATABASE [SIGNUP]
         // get players from DATABASE [PLAYER]
@@ -89,16 +91,23 @@ public class MatchRoundService {
     }
 
     /**
-     * Method conacts DATABASE[COURTSAVAILABLE] with eventId && roundNr and retreives the available courts.
-     *
+     * Method contacts DATABASE[COURTSAVAILABLE] with eventId && roundNr and retreives the available courts.
+     * Method contact DATABASE[COURTS] with courtID and retreives the courtType.
      * #TODO GETMAPPING
      */
-private List<Long> getAvailableCourtList(Long eventId, int roundNr) {
+private List<Court> getAvailableCourtList(Long eventId, int roundNr) {
 
     Long dummyEventId = eventId;
     int dummyRoundNr = roundNr;
-    // list consists out of CourtId's , the courts available for the round.
-  List<Long> dummyCourtList = List.of(1L, 2L);
+
+    // #TODO change this to a List<Court>
+
+  List<Court> dummyCourtList = List.of(new Court(1L, TypeOfCourt.CLAY),
+          new Court(2L, TypeOfCourt.CARPET),
+          new Court(3L, TypeOfCourt.GRASS),
+          new Court(4L, TypeOfCourt.HARD),
+          new Court(5L, TypeOfCourt.SMASH)
+  );
 
   return dummyCourtList;
 }
@@ -111,12 +120,12 @@ private List<Player> getSigneddUpPlayersList(Long eventId) {
 
     List<Long> playerIdList = getSignedUpPlayerIdList(dummyEventId);
 
-    List<Player> playerList = new ArrayList<>();
+    List<Player> dummyPlayerList = new ArrayList<>();
 
     for(Long playerId: playerIdList) {
-        playerList.add(getPlayer(playerId));
+        dummyPlayerList.add(getPlayer(playerId));
     }
-    return playerList;
+    return dummyPlayerList;
 }
 
 
@@ -138,8 +147,8 @@ private List<Player> getSigneddUpPlayersList(Long eventId) {
      */
 private Player getPlayer(Long playerId) {
     Long dummyPlayerId = playerId;
-    Player player = new Player(1L, 8.0, false, false);
-    return player;
+    Player dummyPlayer = new Player(1L, 8.0, false, false);
+    return dummyPlayer;
  }
 
 }

@@ -1,5 +1,6 @@
-package com.citybridge.tos.schedulingServerTask.player;
+package com.citybridge.tos.schedulingServerTask.matchMaker.playerListChecker;
 
+import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;

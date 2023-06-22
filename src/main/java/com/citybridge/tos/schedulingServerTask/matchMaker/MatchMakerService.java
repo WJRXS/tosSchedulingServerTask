@@ -1,11 +1,13 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker;
 
+import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignPlayersToCourts;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
+import com.citybridge.tos.schedulingServerTask.matchMaker.benchUpdate.BenchUpdate;
 import com.citybridge.tos.schedulingServerTask.matchMaker.lottery.Lottery;
 import com.citybridge.tos.schedulingServerTask.player.Player;
-import com.citybridge.tos.schedulingServerTask.player.PlayerListChecker;
+import com.citybridge.tos.schedulingServerTask.matchMaker.playerListChecker.PlayerListChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,14 @@ public class MatchMakerService {
     private final Lottery lottery;
     private final PlayerListChecker playerListChecker;
     private final AssignPlayersToCourts assignPlayersToCourts;
+    private final BenchUpdate benchUpdate;
 
     @Autowired
-    public MatchMakerService(Lottery lottery, PlayerListChecker playerListChecker, AssignPlayersToCourts assignPlayersToCourts) {
+    public MatchMakerService(Lottery lottery, PlayerListChecker playerListChecker, AssignPlayersToCourts assignPlayersToCourts, BenchUpdate benchUpdate) {
         this.lottery = lottery;
         this.playerListChecker = playerListChecker;
         this.assignPlayersToCourts = assignPlayersToCourts;
+        this.benchUpdate = benchUpdate;
     }
 
 
@@ -68,10 +72,10 @@ public class MatchMakerService {
      *      * If there are 3 leftovers, there is no bench , to fill a 3 player Mexican to a
      *      * 4man double. and thus a 3 man match will be assigned to the single court.
      */
-    public List<AssignedPlayer> getAssignedPlayerList(Event event, List<Long> courtIdList, List<Player> playerList) {
+    public List<AssignedPlayer> getAssignedPlayerList(Event event, List<Court> courtIdList, List<Player> playerList) {
 
         /** ---- 1A----- Lottery
-         * add roll to players
+         * ADD roll to players
          * sort list comparable to roll.
          */
 
@@ -85,30 +89,38 @@ public class MatchMakerService {
 
         List<Player> playerBinList = playerListChecker.checkForBadConfiguration(playerList, courtIdList.size());
 
+
+        /**
+         *  ------ 1C --------
+         * Adjust player settings
+         * Set playerlist (now effectively assigned players to a match) status: not benched.
+         * Set binlist players status: benched.
+         */
+
+        benchUpdate.updateBenchPlay(playerList, playerBinList);
+
+
+        /**
+        *
+        * 2A
+        *  next try to convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
+        *
+         *  players assigned to courts
+         *  players assigned to bench
+         *  List [playerId][CourtId][Position][Roll]  CourtId -1 = benched    Position: 1234 (13vs24)
+         *  List [Long][Long][int][int]
+         *  ********  class List [AssignedPlayer]??   *****************
+         */
+        List<AssignedPlayer> assignedPlayerList = assignPlayersToCourts.getAssignedPlayersToCourtsList(event, courtIdList, playerList, playerBinList);
+
          /**
          *
-         * 2A
-         *  next try to convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
-         *
-          *  players assigned to courts
-          *  players assigned to bench
-          *  List [playerId][CourtId][Position][Roll]  CourtId -1 = benched    Position: 1234 (13vs24)
-          *  List [Long][Long][int][int]
-          *  ********  class List [AssignedPlayer]??   *****************
-          *
-          *
-          *  2B
-         * Adjust player settings
-         * Set assigned players status: not benched.
-         * Set binlist players status: benched.
-         *
-         *
-         * 2C
+         * 2B
          * return the (assignedPlayersList)
          *
          */
 
-        List<AssignedPlayer> assignedPlayerList = assignPlayersToCourts.getAssignedPlayersToCourtsList();
+
         return assignedPlayerList;
     }
 

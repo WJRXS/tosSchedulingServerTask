@@ -3,18 +3,22 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 public class AssignedPlayer {
 
    Long playerId;
+   Boolean isSexMale;
+   Double strength;
    Long courtId;
    int position;
    int roll;
+   TypeOfMatch typeOfMatch;
 
     public AssignedPlayer() {
     }
 
-    public AssignedPlayer(Long playerId, Long courtId, int position, int roll) {
+    public AssignedPlayer(Long playerId, Boolean isSexMale, Long courtId, int position, int roll, TypeOfMatch typeOfMatch) {
         this.playerId = playerId;
         this.courtId = courtId;
         this.position = position;
         this.roll = roll;
+        this.typeOfMatch = typeOfMatch;
     }
 
     public Long getPlayerId() {
@@ -48,4 +52,30 @@ public class AssignedPlayer {
     public void setRoll(int roll) {
         this.roll = roll;
     }
+
+    public TypeOfMatch getTypeOfMatch() {
+        return typeOfMatch;
+    }
+
+    public void setTypeOfMatch(TypeOfMatch typeOfMatch) {
+        this.typeOfMatch = typeOfMatch;
+    }
+
+    public Boolean getSexMale() {
+        return isSexMale;
+    }
+
+    public void setSexMale(Boolean sexMale) {
+        isSexMale = sexMale;
+    }
+
+    public Double getStrength() {
+        return strength;
+    }
+
+    public void setStrength(Double strength) {
+        this.strength = strength;
+    }
+
+
 }
