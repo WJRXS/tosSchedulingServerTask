@@ -3,6 +3,7 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.event.TosType;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.mexicanMatch.MexicanMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.singleMatch.SingleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import java.util.List;
 public class AssignPlayersToCourts {
 
     private final SingleMatchCreator singleMatchCreator;
+    private final MexicanMatchCreator mexicanMatchCreator;
 
     @Autowired
-    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator) {
+    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator, MexicanMatchCreator mexicanMatchCreator) {
         this.singleMatchCreator = singleMatchCreator;
+        this.mexicanMatchCreator = mexicanMatchCreator;
     }
 
 
@@ -39,18 +42,29 @@ public class AssignPlayersToCourts {
      *
      *
      * Check1:
-     * 1A) courts => players?
-     * Create Matches, Fill courts with double, until 3 (mexican),  2 (single) players are left.
+     * 1A) Nr courts [vs] Nr players?
+     * players < courts: create single / mexican (possible 1 on bench)
+     * players = courts: perfect, might end up with weird MFFF or FMMM double
+     * players > courts: standard scenario: benched players.
+     *
+     * #Old Notes 1A
+     * female/male divisions: The Double matches have priority, and thus if needed,
+     * - the single will consist out of a man and a female: BattleOfTheSexes.
+     * - odd total players. If there is 1 female/male leftover, the lowest sex roll
+     *   will be benched in processing.
+     *  - If there are 3 leftovers, there is no bench ,
+     *   and thus a 3 man match will be assigned to the single court.
+     *
+     *
+     * 1B) Nr Male & Nr Female - Mix & Non-Mix
+     * Create a list of match type(mix double, f double, m double)
+     *
+     * 1c)
+     * start creating those matches and add them to the assignedplayercourtlist
+     *
      *
 
-     *      * female/male divisions: The Double matches have priority, and thus if needed,
-     *      * the single will consist out of a man and a female: BattleOfTheSexes.
-     *      *
-     *      * odd total players. If there is 1 female/male leftover, the lowest sex roll
-     *      * will be benched in processing.
-     *      *
-     *      * If there are 3 leftovers, there is no bench , to fill a 3 player Mexican to a
-     *      * 4man double. and thus a 3 man match will be assigned to the single court.
+     *
      *
      *
      */

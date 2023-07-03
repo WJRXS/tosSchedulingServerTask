@@ -30,7 +30,6 @@ public class MexicanMatchCreator {
          */
 
 
-
         // 0) FIND player 1
         // VOLUNTARY: High roll player who likes Mexican (court)
         // or
@@ -62,8 +61,13 @@ public class MexicanMatchCreator {
         // remove p3 from playerList
 
 
-
-
+    /**
+     * This method fill assignedPlayersToCourtsList  with 3 players on 1 court.
+     * Diagram_MexicanMatchCreator.png
+     * @param playerList
+     * @param assignedPlayersToCourtsList
+     * @param courtList
+     */
         public void createMexicanMatch(List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList, List<Court> courtList) {
 
             // 0) FIND player 1
@@ -82,40 +86,45 @@ public class MexicanMatchCreator {
 
 
 
-            // 0) Check
+            // 1) Check
             // check for sex distribution.
             // Determine Player2Sex and player3Sex
             int lastIndex = assignedPlayersToCourtsList.size();
             boolean player1SexIsMale = assignedPlayersToCourtsList.get(lastIndex).getSexMale();
             List<Boolean> player23Sex = checkSexDistribution(playerList, player1SexIsMale);
 
-
-
-
-            // 1) FIND player 1
-            // VOLUNTARY: High roll player who likes single (court)
-            // or
-            // INVOLUNTARY: Lowest roll player(court)
-
-            // VOLUNTARY P1
-            boolean isThereAPlayer1WhoLikesSingle = findVoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList);
-            // INVOLUNTARY P1
-            if (!isThereAPlayer1WhoLikesSingle) { findInvoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList); }
-
             // 2) FIND player 2
             // VOLUNTARY: (automaticly means p1 is also voluntary = strength check)
-            //
             // or
             // INVOLUNTARY: Lowest roll player (with or without strength check)
 
             // VOLUNTARY P2
-            boolean player2Sex = getPlayer2Sex(isSingleMixed, assignedPlayersToCourtsList);
-            boolean isThereAPlayer2WhoLikesSingle = findVoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList);
-
+            boolean player2Sex = player23Sex.get(0);
+            boolean isThereAPlayer2WhoLikesMexican = false;
+            if (isThereAPlayer1WhoLikesMexican) {
+             isThereAPlayer2WhoLikesMexican = findVoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList);
+            }
             // INVOLUNTARY P2
-            if(!isThereAPlayer2WhoLikesSingle) { findInvoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList); }
+            if(!isThereAPlayer2WhoLikesMexican) { findInvoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList); }
 
-            // #TODO make some final check if the single is really created.
+
+            // 3) FIND player 3
+            // VOLUNTARY: (automaticly means p1 is also voluntary = strength check)
+            // or
+            // INVOLUNTARY: Lowest roll player (with or without strength check)
+
+            // VOLUNTARY P3
+            boolean player3Sex = player23Sex.get(1);
+            boolean isThereAPlayer3WhoLikesMexican = false;
+            if (isThereAPlayer1WhoLikesMexican) {
+                isThereAPlayer3WhoLikesMexican = findVoluntaryPlayer3(player3Sex, playerList, assignedPlayersToCourtsList);
+            }
+            // INVOLUNTARY P3
+            if(!isThereAPlayer3WhoLikesMexican) { findInvoluntaryPlayer3(player3Sex, playerList, assignedPlayersToCourtsList); }
+
+
+            // #TODO make some final check if the mexican is really created.
+
 
 
 
@@ -234,20 +243,7 @@ public class MexicanMatchCreator {
         }
 
 
-        /**
-         * find opponent gender
-         */
-        private boolean getPlayer2Sex(Boolean isSingleMixed, List<AssignedPlayer> assignedPlayersToCourtsList) {
 
-            int index = assignedPlayersToCourtsList.size() -1;
-            boolean p1Sex = assignedPlayersToCourtsList.get(index).getSexMale();
-
-            boolean p2Sex;
-            if (isSingleMixed) {p2Sex = !p1Sex;}
-            else {p2Sex = p1Sex;}
-
-            return p2Sex;
-        }
 
 
         /**
@@ -270,13 +266,13 @@ public class MexicanMatchCreator {
              */
 
             outerloop: for(Player p2:playerList){
-                // ADD any likePlaySingle & friend
-                if(p2.isWantToPlaySingle() && p2.getFriendIdList().contains(player1Id)){
+                // ADD any likePlayMexican & friend
+                if(p2.isWantToPlayMexican() && p2.getFriendIdList().contains(player1Id)){
                     player2List.add(p2);
 
                 }
-                // ADD any likePlaySingle & similar strength.
-                else if(p2.isWantToPlaySingle()
+                // ADD any likePlayMexican & similar strength.
+                else if(p2.isWantToPlayMexican()
                         && (p2.getPlayerStrength() <= (player1Strength +strengthDifference) && p2.getPlayerStrength() >= (player1Strength -strengthDifference))) {
 
                     player2List.add(p2);
@@ -299,14 +295,14 @@ public class MexicanMatchCreator {
                 /**
                  * #TODO deze move herhaald zich, misschien een method voor maken?
                  */
-                AssignedPlayer singlePlayer2=new AssignedPlayer(player2List.get(index2).getPlayerId(),
+                AssignedPlayer mexicanPlayer2=new AssignedPlayer(player2List.get(index2).getPlayerId(),
                         p2Sex,
                         courtId,
                         position2,
                         player2List.get(index2).getRoll(),
-                        TypeOfMatch.SINGLE
+                        TypeOfMatch.MEXICAN
                 );
-                assignedPlayersToCourtsList.add(singlePlayer2);
+                assignedPlayersToCourtsList.add(mexicanPlayer2);
                 playerList.remove(player2List.get(index2));
                 return true;
             }
@@ -315,7 +311,7 @@ public class MexicanMatchCreator {
         }
 
         /**
-         * FIND VOLUNTARY Player2
+         * FIND INVOLUNTARY Player2
          */
         private void findInvoluntaryPlayer2(Boolean p2Sex, List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList) {
 
@@ -328,14 +324,14 @@ public class MexicanMatchCreator {
             for (int i = lastIndex; i >= 0; i--) {
 
                 if(playerList.get(i).isMaleSex() == p2Sex) {
-                    AssignedPlayer singlePlayer2=new AssignedPlayer(playerList.get(i).getPlayerId(),
+                    AssignedPlayer mexicanPlayer2=new AssignedPlayer(playerList.get(i).getPlayerId(),
                             p2Sex,
                             courtId,
                             position2,
                             playerList.get(i).getRoll(),
-                            TypeOfMatch.SINGLE
+                            TypeOfMatch.MEXICAN
                     );
-                    assignedPlayersToCourtsList.add(singlePlayer2);
+                    assignedPlayersToCourtsList.add(mexicanPlayer2);
                     playerList.remove(i);
                 }
                 else {
@@ -345,21 +341,101 @@ public class MexicanMatchCreator {
             }
         }
 
-        // 0)
-        // check for sex distribution.
-        // Assign opponent sex = X.
 
-        // 1)
-        // check for friends (X) who like single
+    /**
+     * FIND VOLUNTARY Player3
+     * #TODO consider dividing strength difference of friends by 2, to compete with non friend str difference.
+     */
+    private boolean findVoluntaryPlayer3(Boolean p3Sex, List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList) {
 
-        // 2)
-        // check for anybody (X) who likes single
+        int index = assignedPlayersToCourtsList.size() -1;
+        Long player1Id = assignedPlayersToCourtsList.get(index).getPlayerId();
+        Double player1Strength = assignedPlayersToCourtsList.get(index).getStrength();
+        Double strengthDifference = 1.0;
+        Long courtId = assignedPlayersToCourtsList.get(index).getCourtId();
+        int position3 = 3;
 
-        // 3)
-        // for lowest roll (X) similar strength.
 
-        // 4)
-        // assign
+        List<Player> player3List = new ArrayList<>();
+        /**
+         * make list of potentials. sort on strength. and next pick the closest strength.
+         */
+
+        outerloop: for(Player p3:playerList){
+            // ADD any likePlayMexican & friend
+            if(p3.isWantToPlayMexican() && p3.getFriendIdList().contains(player1Id)){
+                player3List.add(p3);
+
+            }
+            // ADD any likePlayMexican & similar strength.
+            else if(p3.isWantToPlayMexican()
+                    && (p3.getPlayerStrength() <= (player1Strength +strengthDifference) && p3.getPlayerStrength() >= (player1Strength -strengthDifference))) {
+
+                player3List.add(p3);
+            }
+        }
+
+        // Sort list. last = smallest strength difference.
+        if (player3List.size() > 0) {
+
+            Collections.sort(player3List, new Comparator<Player>() {
+                @Override
+                public int compare(Player pA, Player pB) {
+                    return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
+                }
+            });
+
+            int index3 = player3List.size() -1;
+
+
+            /**
+             * #TODO deze move herhaald zich, misschien een method voor maken?
+             */
+            AssignedPlayer mexicanPlayer3=new AssignedPlayer(player3List.get(index3).getPlayerId(),
+                    p3Sex,
+                    courtId,
+                    position3,
+                    player3List.get(index3).getRoll(),
+                    TypeOfMatch.MEXICAN
+            );
+            assignedPlayersToCourtsList.add(mexicanPlayer3);
+            playerList.remove(player3List.get(index3));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * FIND INVOLUNTARY Player3
+     */
+    private void findInvoluntaryPlayer3(Boolean p3Sex, List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+
+        int indexP1 = assignedPlayersToCourtsList.size() -1;
+        Long courtId = assignedPlayersToCourtsList.get(indexP1).getCourtId();
+        int position3 = 3;
+
+        int lastIndex = playerList.size() -1;
+
+        for (int i = lastIndex; i >= 0; i--) {
+
+            if(playerList.get(i).isMaleSex() == p3Sex) {
+                AssignedPlayer mexicanPlayer3=new AssignedPlayer(playerList.get(i).getPlayerId(),
+                        p3Sex,
+                        courtId,
+                        position3,
+                        playerList.get(i).getRoll(),
+                        TypeOfMatch.MEXICAN
+                );
+                assignedPlayersToCourtsList.add(mexicanPlayer3);
+                playerList.remove(i);
+            }
+            else {
+                // throw exception. no possible partners for single. #TODO set minimum event players?
+            }
+
+        }
+    }
 
 
         /**

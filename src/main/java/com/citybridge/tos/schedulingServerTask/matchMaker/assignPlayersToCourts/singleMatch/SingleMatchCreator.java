@@ -46,10 +46,13 @@ public class SingleMatchCreator {
     // remove p2 from playerList
 
 
-
-
-
-
+    /**
+     * This method fills the assignedPlayersToCourtsList with 2 players on 1 court.
+     * Diagram_SingleMatchCreator.png
+     * @param playerList
+     * @param assignedPlayersToCourtsList
+     * @param courtList
+     */
     public void createSingleMatch(List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList, List<Court> courtList) {
 
         // 0) Check
