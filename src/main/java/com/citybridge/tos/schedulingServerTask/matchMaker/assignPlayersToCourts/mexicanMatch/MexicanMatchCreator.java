@@ -3,7 +3,7 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.stereotype.Service;
 
@@ -158,6 +158,9 @@ public class MexicanMatchCreator {
                 assignedPlayersToCourtsList.add(mexicanPlayer1);
 
                 playerList.remove(p);
+                deleteCourt(courtList, courtId);
+
+
                 return true;
             }
         }
@@ -185,6 +188,7 @@ public class MexicanMatchCreator {
         );
         assignedPlayersToCourtsList.add(mexicanPlayer1);
         playerList.remove(p);
+        deleteCourt(courtList, courtId);
     }
 
 
@@ -457,6 +461,21 @@ public class MexicanMatchCreator {
             // NO MATCH, something might have gone wrong, just take the first court.
             return courtList.get(0).getCourtId();
         }
+
+    /**
+     * Util
+     * remove a selected court from the court list
+     * #TODO might be able to directly delete with courtId? courtList.remove(courtId)?
+     */
+    private void deleteCourt(List<Court> courtList, Long courtId) {
+        for (Court c: courtList) {
+            if(c.getCourtId() == courtId) {
+                courtList.remove(c);
+                break;
+            }
+        }
+
+    }
 
 
 

@@ -1,5 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts;
 
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
+
 public class AssignedPlayer {
 
    Long playerId;

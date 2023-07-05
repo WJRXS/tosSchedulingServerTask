@@ -3,7 +3,7 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
 
 @Service
 public class SingleMatchCreator {
@@ -33,7 +32,7 @@ public class SingleMatchCreator {
     // INVOLUNTARY: Lowest roll player(court)
     // add p1 to assignedPlayerList
     // remove p1 from playerList
-    // find court &= remove court from courtList
+    // find court &= remove court!!! from courtList
 
 
 
@@ -163,7 +162,7 @@ public class SingleMatchCreator {
                 assignedPlayersToCourtsList.add(singlePlayer1);
 
                 playerList.remove(p);
-
+                deleteCourt(courtList, courtId);
 
                 return true;
                 }
@@ -192,6 +191,9 @@ public class SingleMatchCreator {
             assignedPlayersToCourtsList.add(singlePlayer1);
 
             playerList.remove(p);
+            deleteCourt(courtList, courtId);
+
+
         }
 
     /**
@@ -342,6 +344,19 @@ public class SingleMatchCreator {
         return courtList.get(0).getCourtId();
     }
 
+    /**
+     * Util
+     * remove a selected court from the court list
+     * #TODO might be able to directly delete with courtId? courtList.remove(courtId)?
+     */
+     private void deleteCourt(List<Court> courtList, Long courtId) {
+        for (Court c: courtList) {
+            if(c.getCourtId() == courtId) {
+                courtList.remove(c);
+                break;
+            }
+         }
 
+    }
 
 }

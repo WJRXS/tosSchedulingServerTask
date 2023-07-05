@@ -3,6 +3,8 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.event.TosType;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatchListCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.mexicanMatch.MexicanMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.singleMatch.SingleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.player.Player;
@@ -20,11 +22,13 @@ public class AssignPlayersToCourts {
 
     private final SingleMatchCreator singleMatchCreator;
     private final MexicanMatchCreator mexicanMatchCreator;
+    private final TypeOfMatchListCreator typeOfMatchListCreator;
 
     @Autowired
-    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator, MexicanMatchCreator mexicanMatchCreator) {
+    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator, MexicanMatchCreator mexicanMatchCreator, TypeOfMatchListCreator typeOfMatchListCreator) {
         this.singleMatchCreator = singleMatchCreator;
         this.mexicanMatchCreator = mexicanMatchCreator;
+        this.typeOfMatchListCreator = typeOfMatchListCreator;
     }
 
 
@@ -72,23 +76,47 @@ public class AssignPlayersToCourts {
     public List<AssignedPlayer> getAssignedPlayersToCourtsList(Event event, List<Court> courtIdList, List<Player> playerList, List<Player> playerBinList) {
         List<AssignedPlayer> assignedPlayersToCourtsList = new ArrayList<AssignedPlayer>();
 
+        /**
+         * #TODO implement different tostypes, like all singles.
+         */
         TosType tosType = event.getTosType();
-
+        //if (tosType == TosType.DOUBLE) {}
         /**
          * Check 0
          */
-        createLeftOverMatch(event, playerList);
+        createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtIdList);
+
+        /**
+         * Action 1
+         * get the Mix % from event
+         * determine the number of Mix Doubles, and thus, Male doubles and Female Doubles.
+         * Make a list of the MatchTypes.
+         *
+         *
+         * // EVENT: Type of TOS setting
+         * // private TosType tosType = TosType.DOUBLE;  // focus on double.
+         * // private int mixVersusStraight = 0; // 0 most mix matches, 100 for most straight matches.
+         */
+        List<TypeOfMatch> typeOfMatchList = typeOfMatchListCreator.createTypeOfMatchList(event, playerList);
+
+        /**
+         * Action2
+         * use the matchlist to create the actual doubles.
+         */
 
 
-        List<TypeOfMatch> typeOfMatchList = createTypeOfMatchList(event, playerList);
-
-
-
-
-
+        /**
+         * Action 3
+         * return the assigned player list.
+         */
         return assignedPlayersToCourtsList;
         }
-    }
+
+
+
+
+
+
 
 
     /**
@@ -130,8 +158,10 @@ public class AssignPlayersToCourts {
      *  No mutual friends: friends - strength %roll
      */
 
-    private void createLeftOverMatch(Event event, List<Player> playerList) {
-
+    private void createLeftOverMatch(Event event,
+                                     List<Player> playerList,
+                                     List<AssignedPlayer> assignedPlayersToCourtsList,
+                                     List<Court> courtList) {
 
         int nrOfPlayers = playerList.size();
         int leftover = nrOfPlayers%4;
@@ -141,68 +171,27 @@ public class AssignPlayersToCourts {
             //throw exception
         } else if(leftover == 2) {
             // SINGLE
-            singleMatchCreator.createSingleMatch(playerList);
+            singleMatchCreator.createSingleMatch(playerList, assignedPlayersToCourtsList, courtList);
 
         } else if (leftover == 3) {
             // MEXICAN
-           createMexicanMatch();
+            mexicanMatchCreator.createMexicanMatch(playerList, assignedPlayersToCourtsList, courtList);
         } else if (leftover == 0 | leftover == 4) {
             // nothing
         } else {
             // throw exception
         }
+  }
+
+
+    /**
+     *
+     */
 
 
 
-    }
 
 
-
-
-
-
-
-    private void createMexicanMatch(List<Player> playerList) {
-
-    }
-
-
-
-    private List<TypeOfMatch> createTypeOfMatchList(Event event, List<Player> playerList) {     //old createCourtList
-
-
-        int courtCounter = 1;
-        List<TypeOfMatch> typeOfMatchList = new ArrayList<>();
-
-        int nrOfPlayers = playerList.size();
-        int leftover = nrOfPlayers%4;
-
-
-        if(leftover == 1) {
-            //throw exception
-        } else if(leftover == 2) {
-            // SINGLE
-            typeOfMatchList.add(TypeOfMatch.SINGLE);
-
-        } else if (leftover == 3) {
-            // MEXICAN
-            typeOfMatchList.add(TypeOfMatch.MEXICAN);
-        } else if (leftover == 0 | leftover ==4) {
-
-             } else {
-            // throw exception
-           }
-
-        int nrOfDoubleMatches = (int) (nrOfPlayers / 4); //#TODO check for rounding problems
-
-
-    if(tosType == TosType.DOUBLE) {
-
-
-
-    }
-    return typeOfMatchList;
- }
 
 
 

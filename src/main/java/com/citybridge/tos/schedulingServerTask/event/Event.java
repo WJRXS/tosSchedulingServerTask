@@ -56,6 +56,7 @@ public class Event {
     }
 
     public void setMixVersusStraight(int mixVersusStraight) {
+        // #TODO 0-100 setting
         this.mixVersusStraight = mixVersusStraight;
     }
 
