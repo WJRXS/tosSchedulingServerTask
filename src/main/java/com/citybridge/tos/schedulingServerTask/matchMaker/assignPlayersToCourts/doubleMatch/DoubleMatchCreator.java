@@ -125,19 +125,19 @@ public class DoubleMatchCreator {
      */
     private TypeOfMatch getTypeOfMatch(List<TypeOfMatch> typeOfMatchList, List<TypeOfMatch> typeOfMatchPreference) {
 
+
+        TypeOfMatch typeOfMatch = typeOfMatchList.get(0);
+
         for (TypeOfMatch type: typeOfMatchPreference) {
             if (typeOfMatchList.contains(type)) {
                 typeOfMatchList.remove(type);
                 return type;
-
-            } else {
-                TypeOfMatch typeOfMatch = typeOfMatchList.get(0);
-                typeOfMatchList.remove(0);
+            } else { // #TODO redundant return, might just leave the bottom one.
+               typeOfMatchList.remove(0);
                 return typeOfMatch;
             }
-
         }
-
+        return typeOfMatch;
     }
 
     /**
