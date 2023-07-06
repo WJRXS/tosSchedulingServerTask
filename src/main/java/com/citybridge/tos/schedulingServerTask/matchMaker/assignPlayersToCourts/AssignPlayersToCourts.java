@@ -5,6 +5,7 @@ import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.event.TosType;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatchListCreator;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.DoubleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.mexicanMatch.MexicanMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.singleMatch.SingleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.player.Player;
@@ -23,12 +24,17 @@ public class AssignPlayersToCourts {
     private final SingleMatchCreator singleMatchCreator;
     private final MexicanMatchCreator mexicanMatchCreator;
     private final TypeOfMatchListCreator typeOfMatchListCreator;
+    private final DoubleMatchCreator doubleMatchCreator;
 
     @Autowired
-    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator, MexicanMatchCreator mexicanMatchCreator, TypeOfMatchListCreator typeOfMatchListCreator) {
+    public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator,
+                                 MexicanMatchCreator mexicanMatchCreator,
+                                 TypeOfMatchListCreator typeOfMatchListCreator,
+                                 DoubleMatchCreator doubleMatchCreator) {
         this.singleMatchCreator = singleMatchCreator;
         this.mexicanMatchCreator = mexicanMatchCreator;
         this.typeOfMatchListCreator = typeOfMatchListCreator;
+        this.doubleMatchCreator = doubleMatchCreator;
     }
 
 
@@ -103,7 +109,7 @@ public class AssignPlayersToCourts {
          * Action2
          * use the matchlist to create the actual doubles.
          */
-
+        doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtIdList, playerList);
 
         /**
          * Action 3
