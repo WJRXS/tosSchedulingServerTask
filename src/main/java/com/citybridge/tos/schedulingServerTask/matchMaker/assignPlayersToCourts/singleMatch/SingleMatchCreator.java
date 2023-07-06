@@ -148,7 +148,7 @@ public class SingleMatchCreator {
 
 
                 List<TypeOfCourt> courtPreference=p.getCourtPreference();
-                Long courtId=findCourtId(courtPreference,courtList);
+                Long courtId = findCourtId(courtPreference,courtList);
                 int position1 = 1;
 
                 AssignedPlayer singlePlayer1=new AssignedPlayer(p.getPlayerId(),
@@ -162,7 +162,6 @@ public class SingleMatchCreator {
                 assignedPlayersToCourtsList.add(singlePlayer1);
 
                 playerList.remove(p);
-                deleteCourt(courtList, courtId);
 
                 return true;
                 }
@@ -191,7 +190,7 @@ public class SingleMatchCreator {
             assignedPlayersToCourtsList.add(singlePlayer1);
 
             playerList.remove(p);
-            deleteCourt(courtList, courtId);
+
 
 
         }
@@ -349,14 +348,14 @@ public class SingleMatchCreator {
      * remove a selected court from the court list
      * #TODO might be able to directly delete with courtId? courtList.remove(courtId)?
      */
-     private void deleteCourt(List<Court> courtList, Long courtId) {
-        for (Court c: courtList) {
-            if(c.getCourtId() == courtId) {
-                courtList.remove(c);
-                break;
-            }
-         }
+    // private void deleteCourt(List<Court> courtList, Long courtId) {
+    //    for (Court c: courtList) {
+     //       if(c.getCourtId() == courtId) {
+      //          courtList.remove(c);
+      //          break;
+     //       }
+     //    }
 
-    }
+    //}
 
 }

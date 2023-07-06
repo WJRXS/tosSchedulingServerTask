@@ -1,6 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.player;
 
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class Player { //} implements Comparable<Player>{
     // 5 SMASH
     private List<TypeOfCourt> courtPreference;
 
+    private List<TypeOfMatch> typeOfMatchPreference;
+
     private List<Long> friendIdList;
 
 
@@ -39,13 +42,26 @@ public class Player { //} implements Comparable<Player>{
         this.benched = benched;
         this.maleSex = maleSex;
         courtPreference = List.of(TypeOfCourt.GRASS, TypeOfCourt.HARD, TypeOfCourt.CLAY, TypeOfCourt.SMASH, TypeOfCourt.CARPET);
+
         friendIdList = List.of(5L, 6L);
+        dummyFillTypeOfMatchPreference(maleSex);
     }
 
  //   @Override
  //   public int compareTo(Player anotherPlayer) {
   //      return this.roll.compareTo(anotherPlayer.getRoll());
  //   }
+
+    private void dummyFillTypeOfMatchPreference(Boolean maleSex) {
+
+        if (maleSex) {
+            typeOfMatchPreference = List.of(TypeOfMatch.DOUBLE_MIX, TypeOfMatch.DOUBLE_MALE);
+        }
+        else {
+            typeOfMatchPreference = List.of(TypeOfMatch.DOUBLE_MIX, TypeOfMatch.DOUBLE_FEMALE);
+        }
+
+    }
 
     public boolean isHasNotPlayedAMatchThisTos() {
         return hasNotPlayedAMatchThisTos;
@@ -56,8 +72,17 @@ public class Player { //} implements Comparable<Player>{
     }
 
 
+    public void setMaleSex(boolean maleSex) {
+        this.maleSex = maleSex;
+    }
 
+    public List<TypeOfMatch> getTypeOfMatchPreference() {
+        return typeOfMatchPreference;
+    }
 
+    public void setTypeOfMatchPreference(List<TypeOfMatch> typeOfMatchPreference) {
+        this.typeOfMatchPreference = typeOfMatchPreference;
+    }
 
     public boolean isHasPlayedLeftOverMatch() {
         return hasPlayedLeftOverMatch;
