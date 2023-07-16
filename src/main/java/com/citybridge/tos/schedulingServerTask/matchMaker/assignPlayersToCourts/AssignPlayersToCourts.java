@@ -109,7 +109,7 @@ public class AssignPlayersToCourts {
          * Action2
          * use the matchlist to create the actual doubles.
          */
-        doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtIdList, playerList);
+        doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtIdList, playerList, event);
 
         /**
          * Action 3

@@ -3,6 +3,7 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
+import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignPlayersToCourts;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
@@ -35,7 +36,8 @@ public class DoubleMatchCreator {
     public void createDoubleMatch(List<AssignedPlayer> assignedPlayersToCourtsList,
                                   List<TypeOfMatch> typeOfMatchList,
                                   List<Court> courtList,
-                                  List<Player> playerList
+                                  List<Player> playerList,
+                                  Event event
                                   ) {
 
     int numberOfMatches = typeOfMatchList.size();
@@ -45,7 +47,7 @@ public class DoubleMatchCreator {
 
     boolean isMatchTypeLast = isMatchTypeLast(assignedPlayersToCourtsList, typeOfMatchList);
 
-    createSpecificDouble(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast);
+    createSpecificDouble(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
 
 
 
@@ -97,17 +99,18 @@ public class DoubleMatchCreator {
    private boolean createSpecificDouble(List<Player> playerList,
                                      List<AssignedPlayer> assignedPlayersToCourtsList,
                                      TypeOfMatch typeOfMatch,
-                                     boolean isMatchTypeLast) {
+                                     boolean isMatchTypeLast,
+                                        Event event) {
        boolean b = false;
 
         if (typeOfMatch == TypeOfMatch.DOUBLE_MALE) {
-            b = doubleMaleMatch.createDoubleMaleMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast);
+            b = doubleMaleMatch.createDoubleMaleMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
         }
             else if (typeOfMatch == TypeOfMatch.DOUBLE_FEMALE) {
-            b = doubleFemaleMatch.createDoubleFemaleMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast);
+            b = doubleFemaleMatch.createDoubleFemaleMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
         }
             else if (typeOfMatch == TypeOfMatch.DOUBLE_MIX) {
-            b = doubleMixMatch.createDoubleMixMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast);
+            b = doubleMixMatch.createDoubleMixMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
         }
                 else {
                     //throw exception

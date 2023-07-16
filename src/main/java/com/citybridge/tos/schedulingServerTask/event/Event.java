@@ -63,7 +63,8 @@ public class Event {
     // Type of TOS setting
     private TosType tosType = TosType.DOUBLE;  // focus on double.
     private int mixVersusStraight = 0; // 0 most mix matches, 100 for most straight matches.
-
+    private boolean partnerConnection = true; // set to true to have player 1 play with partner.
+    private double strengthDifference = 1.0; // try matching players with similar str first.
 
     public Event() {
     }
@@ -115,5 +116,21 @@ public class Event {
 
     public void setAnnounceTime(Long announceTime) {
         this.announceTime = announceTime;
+    }
+
+    public boolean isPartnerConnection() {
+        return partnerConnection;
+    }
+
+    public void setPartnerConnection(boolean partnerConnection) {
+        this.partnerConnection = partnerConnection;
+    }
+
+    public double getStrengthDifference() {
+        return strengthDifference;
+    }
+
+    public void setStrengthDifference(double strengthDifference) {
+        this.strengthDifference = strengthDifference;
     }
 }

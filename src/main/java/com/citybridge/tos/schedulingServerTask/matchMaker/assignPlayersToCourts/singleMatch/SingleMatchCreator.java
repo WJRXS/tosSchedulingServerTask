@@ -220,7 +220,7 @@ public class SingleMatchCreator {
     int index = assignedPlayersToCourtsList.size() -1;
     Long player1Id = assignedPlayersToCourtsList.get(index).getPlayerId();
     Double player1Strength = assignedPlayersToCourtsList.get(index).getStrength();
-    Double strengthDifference = 1.0;
+    Double strengthDifference = 1.0; // #TODO get from event
     Long courtId = assignedPlayersToCourtsList.get(index).getCourtId();
     int position2 = 2;
 
