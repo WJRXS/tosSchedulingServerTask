@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class DoubleStraightMatch {
     /**
-     *
+     * #TODO SIMPLIFY FIND PLAYER & ASSIGN PLAYER LIKE MIXMATCH
      * @param playerList
      * @param assignedPlayersToCourtsList
      * @param typeOfMatch

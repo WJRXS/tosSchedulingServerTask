@@ -22,11 +22,9 @@ public class DoubleMixMatch {
             createDoubleMixMatchPlenty(playerList, assignedPlayersToCourtsList, event);
         }
         else {
-            createDoubleMixMatchLast(playerList, assignedPlayersToCourtsList);
+            createDoubleMixMatchLast(playerList, assignedPlayersToCourtsList, event);
         }
-
-
-        return true;
+       return true;
     }
 
 
@@ -95,27 +93,27 @@ public class DoubleMixMatch {
         TypeOfMatch typeOfMatch = TypeOfMatch.DOUBLE_MIX;
 
         /**
-         * Player 2, opposite sex
+         * Player 2, same sex
          */
-        findPlayer(!isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 2, strengthDifference, player1Strength);
+        findPlayer(isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 2, strengthDifference, player1Strength);
 
         int index2 = assignedPlayersToCourtsList.size() -1;
         Double player2Strength = assignedPlayersToCourtsList.get(index2).getStrength();
         Double average3Strength = (player1Strength + player2Strength) /2;
 
         /**
-         * Player 3, same sex
+         * Player 3, opposite sex
          */
-        findPlayer(isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average3Strength);
+        findPlayer(!isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average3Strength);
 
         int index3 = assignedPlayersToCourtsList.size() -1;
         Double player3Strength = assignedPlayersToCourtsList.get(index3).getStrength();
         Double average4Strength = player1Strength + player3Strength - player2Strength;
 
         /**
-         * Player 4, opposite sex
+         * Player 4, same sex
          */
-        findPlayer(!isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 4, strengthDifference, average4Strength);
+        findPlayer(isSexMaleP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 4, strengthDifference, average4Strength);
     }
 
 
@@ -220,7 +218,8 @@ public class DoubleMixMatch {
      * @return
      */
     private boolean createDoubleMixMatchLast(List<Player> playerList,
-                                             List<AssignedPlayer> assignedPlayersToCourtsList) {
+                                             List<AssignedPlayer> assignedPlayersToCourtsList,
+                                            Event event) {
 
         int index = assignedPlayersToCourtsList.size() -1;
         Long player1Id = assignedPlayersToCourtsList.get(index).getPlayerId();
@@ -228,6 +227,7 @@ public class DoubleMixMatch {
         Long courtId = assignedPlayersToCourtsList.get(index).getCourtId();
         TypeOfMatch typeOfMatch = TypeOfMatch.DOUBLE_MIX;
         boolean sexP1 = assignedPlayersToCourtsList.get(index).getSexMale();
+        double strengthDifference = event.getStrengthDifference();
 
         int sameSexCounter = 0;
         int oppositeSexCounter = 0;
@@ -240,42 +240,126 @@ public class DoubleMixMatch {
             }
         }
 
-
+        /**
+         * HARD COPY OF PLAYERLIST BECAUSE I AM MODIFYING AND USING LIST IN LOOP!
+         */
+        List<Player> playerListCopy = new ArrayList<Player>(playerList);
         /**
          * Scenario A
-         *  --ONLY 1 CONFIGURATION POSSIBLE--
-         *
-         *  #TODO MAKE HARD COPY OF PLAYERLIST CAUSE I AM MODIFYING AND USING LIST IN LOOP!!!!!!!!!!!
-          */
-        if (sameSexCounter + oppositeSexCounter == 3) {
-            int position = 2;
-            for (Player p: playerList) {
+         *  2 configurations possible.
+         *  1 OPPONENT is Fixed.
+         *  1 VARIABLE PARTNER <--switch --> 1 VARIABLE OPPONENT
+         *  (1+B)vs(C +D)  --or-- (1+D)vs(C+B)
+         *  CALCULATE BOTH SCENARIO's. take the lowest strength difference.
+         */
+       if (sameSexCounter + oppositeSexCounter == 3) {
+
+           Player playerB = new Player();
+           Player playerC = new Player();
+           Player playerD = new Player();
+
+           int counter = 0;
+           outerloop: for (Player p: playerListCopy) {
                 if (p.isMaleSex() == sexP1) {
-                    // assign P3
-                    assignMixPlayer(p, courtId, 3, assignedPlayersToCourtsList, playerList);
+                    playerC = p;
                 } else if (p.isMaleSex() != sexP1) {
-                    // assign P2 & P4
-                        position=+2;
+
+                  if(counter == 1) {
+                      playerD = p;
+                      break outerloop;
+                  }
+                      if (counter == 0) {
+                         playerB = p;
+                        counter++;
+                      }
+                  }
                 }
-            }
 
+           double playerBstrength = playerB.getPlayerStrength();
+           double playerCstrength = playerC.getPlayerStrength();
+           double playerDstrength = playerD.getPlayerStrength();
 
+           double scenarioA1 = (player1Strength + playerBstrength) - (playerCstrength + playerDstrength);
+           double scenarioA2 = (player1Strength + playerDstrength) - (playerCstrength + playerBstrength);
 
-        }
+           if (scenarioA1 <= scenarioA2) {
+               assignMixPlayer(playerB, courtId, 3, assignedPlayersToCourtsList, playerList); // partner
+               assignMixPlayer(playerC, courtId, 2 , assignedPlayersToCourtsList, playerList); // opponent opposite sex
+               assignMixPlayer(playerD, courtId, 4, assignedPlayersToCourtsList, playerList);// opponent same sex
+           } else {
+               assignMixPlayer(playerD, courtId, 3, assignedPlayersToCourtsList, playerList); // partner
+               assignMixPlayer(playerC, courtId, 2, assignedPlayersToCourtsList, playerList);  // opponent opposite sex
+               assignMixPlayer(playerB, courtId, 4, assignedPlayersToCourtsList, playerList);// opponent same sex
+           }
+       }
+
         /**
          * Scenario B
-         * --VARIABLE OPPONENT--
+         * many configurations possible.
+         * 1 OPPONENT is Fixed.
+         * 1 VARIABLE PARTNER
+         * 1 VARIABLE OPPONENT
+         *
+         *
           */
         else if (sameSexCounter == 1){
+            for (Player p: playerListCopy) {
+                if (p.isMaleSex() == sexP1) {
+                    assignMixPlayer(p, courtId, 2, assignedPlayersToCourtsList, playerList);
+                }
+            }
+        double player2Strength = assignedPlayersToCourtsList.get(assignedPlayersToCourtsList.size()).getStrength();
+        double average2Strength = (player1Strength + player2Strength) / 2;
+        findPlayer(!sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average2Strength);
 
+        double player3Strength = assignedPlayersToCourtsList.get(assignedPlayersToCourtsList.size()).getStrength();
+        double average4Strength = player1Strength + player3Strength - player2Strength;
+        findPlayer(!sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 4, strengthDifference, average4Strength);
         }
         /**
          * Scenario C
-         * --VARIABLE PARTNER--
+         * initially only 2 configurations possible. later on many more possible.
+         * PARTNER can be chosen from 2 options
+         * (A+B)vs(C) --or-- (A+C)vs(B)
+         * start off with the least strength difference and find player D
+         *
          */
-        else if (oppositeSexCounter == 2) {
+       else if (oppositeSexCounter == 2) {
+           Player playerB = new Player();
+           Player playerC = new Player();
 
-        }
+           int counter = 0;
+           outerloop:
+           for (Player p : playerListCopy) {
+               if (p.isMaleSex() == !sexP1) {
+                   if (counter == 1) {
+                       playerC = p;
+                       break outerloop;
+                   }
+                   if (counter == 0) {
+                       playerB = p;
+                       counter++;
+                   }
+               }
+
+               double playerBstrength = playerB.getPlayerStrength();
+               double playerCstrength = playerC.getPlayerStrength();
+
+               double scenarioC1 = (player1Strength + playerBstrength) - (playerCstrength);
+               double scenarioC2 = (player1Strength + playerCstrength) - (playerBstrength);
+
+               if (scenarioC1 <= scenarioC2) {
+                   assignMixPlayer(playerB, courtId, 3, assignedPlayersToCourtsList, playerList); // partner opposite sex
+                   assignMixPlayer(playerC, courtId, 4, assignedPlayersToCourtsList, playerList); // opponent opposite sex
+                   findPlayer(sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 2, strengthDifference, scenarioC1);
+
+               } else {
+                   assignMixPlayer(playerC, courtId, 3, assignedPlayersToCourtsList, playerList); // partner opposite sex
+                   assignMixPlayer(playerB, courtId, 4, assignedPlayersToCourtsList, playerList);  // opponent opposite sex
+                   findPlayer(sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 2, strengthDifference, scenarioC2);
+               }
+           }
+       }
         /**
          * Exception
          */
@@ -283,56 +367,6 @@ public class DoubleMixMatch {
             //throw exception
         }
 
-
-
-        int index = assignedPlayersToCourtsList.size();
-        AssignedPlayer player1 = assignedPlayersToCourtsList.get(index);
-        boolean isSexMale = player1.getSexMale();
-        double p1Strength = player1.getStrength();
-        long courtId = player1.getCourtId();
-
-        // get the 3 leftovers, put in list
-        List<Player> player234List = new ArrayList<>();
-        for(Player p:playerList) {
-            // ADD players (3!) with sex required
-            if (p.isMaleSex() == isSexMale) {
-                player234List.add(p);
-            }
-        }
-        if (player234List.size() == 3) {
-            // #TODO proceed
-        } else {
-            // throw exception
-        }
-
-        double pX2Strength = player234List.get(0).getPlayerStrength();
-        double pX3Strength = player234List.get(1).getPlayerStrength();
-        double pX4Strength = player234List.get(2).getPlayerStrength();
-
-        // secenario A: 12-34
-        double scenarioA = (p1Strength + pX2Strength) - (pX3Strength + pX4Strength);
-        // scenario 2: 13-24
-        double scenarioB = (p1Strength + pX3Strength) - (pX2Strength + pX4Strength);
-        // scenario 3: 14-23
-        double scenarioC = (p1Strength + pX4Strength) - (pX2Strength + pX3Strength);
-
-        // try all configurations for best strength balance
-        if (scenarioA <= scenarioB && scenarioA <= scenarioB) {
-            assignLastPlayer234(player234List.get(0), player234List.get(1), player234List.get(2), courtId, assignedPlayersToCourtsList, playerList, typeOfMatch);
-        }
-        else if(scenarioB <= scenarioA && scenarioB <= scenarioC) {
-            assignLastPlayer234(player234List.get(1), player234List.get(0), player234List.get(2), courtId, assignedPlayersToCourtsList, playerList, typeOfMatch);
-        }
-        else if (scenarioC <= scenarioA && scenarioC <= scenarioB) {
-            assignLastPlayer234(player234List.get(2), player234List.get(0), player234List.get(1), courtId, assignedPlayersToCourtsList, playerList, typeOfMatch);
-        }
-        else { //throw exception
-        }
-
         return true;
     }
-
-
-
-
 }
