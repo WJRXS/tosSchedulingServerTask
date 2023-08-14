@@ -17,21 +17,18 @@ public class DoubleStraightMatch {
      * #TODO SIMPLIFY FIND PLAYER & ASSIGN PLAYER LIKE MIXMATCH
      * @param playerList
      * @param assignedPlayersToCourtsList
-     * @param typeOfMatch
      * @param isMatchTypeLast
      * @return
      */
     public boolean createDoubleStraightMatch(List<Player> playerList,
                                              List<AssignedPlayer> assignedPlayersToCourtsList,
-                                             TypeOfMatch typeOfMatch,
                                              boolean isMatchTypeLast,
                                              Event event){
 
         if (!isMatchTypeLast) {
             createDoubleStraightMatchPlenty(playerList, assignedPlayersToCourtsList, event);
-        }
-        else {
-            createDoubleStraightMatchLast(playerList, assignedPlayersToCourtsList, typeOfMatch);
+        } else {
+            createDoubleStraightMatchLast(playerList, assignedPlayersToCourtsList);
         }
 
         return true;
@@ -74,14 +71,21 @@ public class DoubleStraightMatch {
      * @return
      */
     private boolean createDoubleStraightMatchLast(List<Player> playerList,
-                                                  List<AssignedPlayer> assignedPlayersToCourtsList,
-                                                  TypeOfMatch typeOfMatch) {
+                                                  List<AssignedPlayer> assignedPlayersToCourtsList) {
 
         int index = assignedPlayersToCourtsList.size();
         AssignedPlayer player1 = assignedPlayersToCourtsList.get(index);
         boolean isSexMale = player1.getSexMale();
         double p1Strength = player1.getStrength();
         long courtId = player1.getCourtId();
+
+        TypeOfMatch typeOfMatch;
+
+        if (isSexMale) {typeOfMatch = TypeOfMatch.DOUBLE_MALE;
+        } else {
+            typeOfMatch = TypeOfMatch.DOUBLE_FEMALE;
+        }
+
 
         // get the 3 leftovers, put in list
         List<Player> player234List = new ArrayList<>();
@@ -164,8 +168,7 @@ public class DoubleStraightMatch {
         /**
          * 2
          */
-        findPlayer2(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, strengthDifference, player1Strength, typeOfMatch);
-
+        findPlayer(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, 2, strengthDifference, player1Strength, typeOfMatch);
         int index2 = assignedPlayersToCourtsList.size() -1;
         Double player2Strength = assignedPlayersToCourtsList.get(index2).getStrength();
         Double average3Strength = (player1Strength + player2Strength) /2;
@@ -173,7 +176,7 @@ public class DoubleStraightMatch {
         /**
          * 3
           */
-        findPlayer3(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, strengthDifference, average3Strength, typeOfMatch);
+        findPlayer(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average3Strength, typeOfMatch);
 
 
         int index3 = assignedPlayersToCourtsList.size() -1;
@@ -183,268 +186,92 @@ public class DoubleStraightMatch {
         /**
          * 4
          */
-        findPlayer4(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, strengthDifference, average4Strength, typeOfMatch);
+        findPlayer(isSexMale, playerList, assignedPlayersToCourtsList, player1Id, courtId, 4, strengthDifference, average4Strength, typeOfMatch);
     }
 
-    /**
-     * #TODO consider dividing strength difference of friends by 2, to compete with non friend str difference.
-     * @param p2Sex
+     /**
+     * NEW FROM MIX
+     *
+     * @param pSex
      * @param playerList
      * @param assignedPlayersToCourtsList
      * @param player1Id
      * @param courtId
+     * @param position
      * @param strengthDifference
-     * @param player1Strength
-     * @param typeOfMatch
+     * @param averageStrength
      */
-    private void findPlayer2(Boolean p2Sex,
-                             List<Player> playerList,
-                             List<AssignedPlayer> assignedPlayersToCourtsList,
-                             Long player1Id,
-                             Long courtId,
-                             Double strengthDifference,
-                             Double player1Strength,
-                             TypeOfMatch typeOfMatch) {
-
-           int position2 = 2;
-
+    private void findPlayer(Boolean pSex,
+                            List<Player> playerList,
+                            List<AssignedPlayer> assignedPlayersToCourtsList,
+                            Long player1Id,
+                            Long courtId,
+                            int position,
+                            Double strengthDifference,
+                            Double averageStrength,
+                            TypeOfMatch typeOfMatch) {
 
 
-
-            List<Player> player2List = new ArrayList<>();
-            /**
-             * make list of potentials. sort on strength. and next pick the closest strength.
-             * ADD any friend
-             * ADD close in strength
-             */
-
-            outerloop: for(Player p2:playerList){
-                // ADD any friend
-                if(p2.getFriendIdList().contains(player1Id) && (p2.isMaleSex() == p2Sex)) {
-                    player2List.add(p2);
-                } else if(p2.getPlayerStrength() <= (player1Strength +strengthDifference) && p2.getPlayerStrength() >= (player1Strength -strengthDifference)&& (p2.isMaleSex() == p2Sex)) {
-                    player2List.add(p2);
-                }
-            }
-
-            // Sort list. last = smallest strength difference.
-            if (player2List.size() > 0) {
-
-                Collections.sort(player2List, new Comparator<Player>() {
-                    @Override
-                    public int compare(Player pA, Player pB) {
-                        return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
-                    }
-                });
-
-                int index2 = player2List.size() -1;
-
-
-                assignPlayer(player2List.get(index2), courtId, position2, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
-            } else {
-                // player2list is empty. ZERO str difference requirement!
-
-                outerloop: for(Player p2:playerList){
-                    // ADD any player
-                     if(p2.isMaleSex() == p2Sex) {
-                        player2List.add(p2);
-                    }
-                }
-
-                if (player2List.size() > 0) {
-
-                    Collections.sort(player2List, new Comparator<Player>() {
-                        @Override
-                        public int compare(Player pA, Player pB) {
-                            return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
-                        }
-                    });
-
-                    int index2 = player2List.size() -1;
-
-
-                    assignPlayer(player2List.get(index2), courtId, position2, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
-            } else {
-                    // throw exception, no list of potential opponents could be made.
-                }
-        }
-    }
-
-
-    /**
-     * #TODO consider dividing strength difference of friends by 2, to compete with non friend str difference.
-     * @param p3Sex
-     * @param playerList
-     * @param assignedPlayersToCourtsList
-     * @param player1Id
-     * @param courtId
-     * @param strengthDifference
-     * @param average3Strength
-     * @param typeOfMatch
-     */
-    private void findPlayer3(Boolean p3Sex,
-                             List<Player> playerList,
-                             List<AssignedPlayer> assignedPlayersToCourtsList,
-                             Long player1Id,
-                             Long courtId,
-                             Double strengthDifference,
-                             Double average3Strength,
-                             TypeOfMatch typeOfMatch) {
-
-        int position3 = 3;
-
-        List<Player> player3List = new ArrayList<>();
+        List<Player> playerXList = new ArrayList<>();
         /**
          * make list of potentials. sort on strength. and next pick the closest strength.
          * ADD any friend
          * ADD close in strength
          */
 
-        outerloop: for(Player p3:playerList){
+        outerloop: for(Player pX:playerList){
             // ADD any friend
-            if(p3.getFriendIdList().contains(player1Id) && (p3.isMaleSex() == p3Sex)) {
-                player3List.add(p3);
-            } else if(p3.getPlayerStrength() <= (average3Strength +strengthDifference) && p3.getPlayerStrength() >= (average3Strength -strengthDifference)&& (p3.isMaleSex() == p3Sex)) {
-                player3List.add(p3);
+            if(pX.getFriendIdList().contains(player1Id) && (pX.isMaleSex() == pSex)) {
+                playerXList.add(pX);
+            } else if(pX.getPlayerStrength() <= (averageStrength +strengthDifference) && pX.getPlayerStrength() >= (averageStrength -strengthDifference)&& (pX.isMaleSex() == pSex)) {
+                playerXList.add(pX);
             }
         }
 
         // Sort list. last = smallest strength difference.
-        if (player3List.size() > 0) {
-
-            Collections.sort(player3List, new Comparator<Player>() {
+        if (playerXList.size() > 0) {
+            Collections.sort(playerXList, new Comparator<Player>() {
                 @Override
                 public int compare(Player pA, Player pB) {
                     return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
                 }
             });
-
-            int index3 = player3List.size() -1;
-
-            assignPlayer(player3List.get(index3), courtId, position3, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
+            int index = playerXList.size() -1;
+            assignStraightPlayer(playerXList.get(index), courtId, position, assignedPlayersToCourtsList, playerList, typeOfMatch);
         } else {
-            // player3list is empty. ZERO str difference requirement!
-
-            outerloop: for(Player p3:playerList){
+            // playerXlist is empty. ZERO str difference requirement!
+            outerloop: for(Player pX:playerList){
                 // ADD any player
-                if(p3.isMaleSex() == p3Sex) {
-                    player3List.add(p3);
+                if(pX.isMaleSex() == pSex) {
+                    playerXList.add(pX);
                 }
             }
-
-            if (player3List.size() > 0) {
-
-                Collections.sort(player3List, new Comparator<Player>() {
+            if (playerXList.size() > 0) {
+                Collections.sort(playerXList, new Comparator<Player>() {
                     @Override
                     public int compare(Player pA, Player pB) {
                         return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
                     }
                 });
-
-                int index3 = player3List.size() -1;
-
-
-                assignPlayer(player3List.get(index3), courtId, position3, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
-            } else {
-                // throw exception, no list of potential opponents could be made.
-            }
-       }
-    }
-
-    /**
-     * #TODO consider dividing strength difference of friends by 2, to compete with non friend str difference.
-     * @param p4Sex
-     * @param playerList
-     * @param assignedPlayersToCourtsList
-     * @param player1Id
-     * @param courtId
-     * @param strengthDifference
-     * @param average4Strength
-     * @param typeOfMatch
-     */
-    private void findPlayer4(Boolean p4Sex,
-                             List<Player> playerList,
-                             List<AssignedPlayer> assignedPlayersToCourtsList,
-                             Long player1Id,
-                             Long courtId,
-                             Double strengthDifference,
-                             Double average4Strength,
-                             TypeOfMatch typeOfMatch) {
-
-        int position4 = 4;
-
-        List<Player> player4List = new ArrayList<>();
-        /**
-         * make list of potentials. sort on strength. and next pick the closest strength.
-         * ADD any friend
-         * ADD close in strength
-         */
-
-        outerloop: for(Player p4:playerList){
-            // ADD any friend
-            if(p4.getFriendIdList().contains(player1Id) && (p4.isMaleSex() == p4Sex)) {
-                player4List.add(p4);
-            } else if(p4.getPlayerStrength() <= (average4Strength +strengthDifference) && p4.getPlayerStrength() >= (average4Strength -strengthDifference)&& (p4.isMaleSex() == p4Sex)) {
-                player4List.add(p4);
-            }
-        }
-
-        // Sort list. last = smallest strength difference.
-        if (player4List.size() > 0) {
-
-            Collections.sort(player4List, new Comparator<Player>() {
-                @Override
-                public int compare(Player pA, Player pB) {
-                    return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
-                }
-            });
-
-            int index4 = player4List.size() -1;
-
-
-            assignPlayer(player4List.get(index4), courtId, position4, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
-        } else {
-            // player3list is empty. ZERO str difference requirement!
-
-            outerloop: for(Player p4:playerList){
-                // ADD any player
-                if(p4.isMaleSex() == p4Sex) {
-                    player4List.add(p4);
-                }
-            }
-
-            if (player4List.size() > 0) {
-
-                Collections.sort(player4List, new Comparator<Player>() {
-                    @Override
-                    public int compare(Player pA, Player pB) {
-                        return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
-                    }
-                });
-
-                int index4 = player4List.size() -1;
-
-                assignPlayer(player4List.get(index4), courtId, position4, assignedPlayersToCourtsList, playerList, typeOfMatch);
-
+                int index = playerXList.size() -1;
+                assignStraightPlayer(playerXList.get(index), courtId, position, assignedPlayersToCourtsList, playerList, typeOfMatch);
             } else {
                 // throw exception, no list of potential opponents could be made.
             }
         }
     }
+
+
+
 
     /**
      * Assign LAST MATCH players 2, 3 4
      */
     private void assignLastPlayer234(Player p2, Player p3, Player p4, Long courtId, List<AssignedPlayer> assignedPlayersToCourtsList, List<Player> playerList, TypeOfMatch typeOfMatch) {
 
-        assignPlayer(p2, courtId, 2, assignedPlayersToCourtsList,  playerList, typeOfMatch);
-        assignPlayer(p3, courtId, 3, assignedPlayersToCourtsList,  playerList, typeOfMatch);
-        assignPlayer(p4, courtId, 4, assignedPlayersToCourtsList,  playerList, typeOfMatch);
+        assignStraightPlayer(p2, courtId, 2, assignedPlayersToCourtsList,  playerList, typeOfMatch);
+        assignStraightPlayer(p3, courtId, 3, assignedPlayersToCourtsList,  playerList, typeOfMatch);
+        assignStraightPlayer(p4, courtId, 4, assignedPlayersToCourtsList,  playerList, typeOfMatch);
 
     }
 
@@ -457,7 +284,7 @@ public class DoubleStraightMatch {
      * @param playerList
      * @param typeOfMatch
      */
-    private void assignPlayer(Player player, Long courtId, int position, List<AssignedPlayer> assignedPlayersToCourtsList, List<Player> playerList, TypeOfMatch typeOfMatch) {
+    private void assignStraightPlayer(Player player, Long courtId, int position, List<AssignedPlayer> assignedPlayersToCourtsList, List<Player> playerList, TypeOfMatch typeOfMatch) {
 
 
         AssignedPlayer doublePlayer =new AssignedPlayer(

@@ -159,7 +159,7 @@ public class DoubleMixMatch {
             assignMixPlayer(playerXList.get(index), courtId, position, assignedPlayersToCourtsList, playerList);
 
         } else {
-            // player2list is empty. ZERO str difference requirement!
+            // playerXlist is empty. ZERO str difference requirement!
 
             outerloop: for(Player pX:playerList){
                 // ADD any player
@@ -309,8 +309,8 @@ public class DoubleMixMatch {
                 }
             }
         double player2Strength = assignedPlayersToCourtsList.get(assignedPlayersToCourtsList.size()).getStrength();
-        double average2Strength = (player1Strength + player2Strength) / 2;
-        findPlayer(!sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average2Strength);
+        double average3Strength = (player1Strength + player2Strength) / 2;
+        findPlayer(!sexP1, playerList, assignedPlayersToCourtsList, player1Id, courtId, 3, strengthDifference, average3Strength);
 
         double player3Strength = assignedPlayersToCourtsList.get(assignedPlayersToCourtsList.size()).getStrength();
         double average4Strength = player1Strength + player3Strength - player2Strength;
@@ -329,8 +329,7 @@ public class DoubleMixMatch {
            Player playerC = new Player();
 
            int counter = 0;
-           outerloop:
-           for (Player p : playerListCopy) {
+           outerloop: for (Player p : playerListCopy) {
                if (p.isMaleSex() == !sexP1) {
                    if (counter == 1) {
                        playerC = p;

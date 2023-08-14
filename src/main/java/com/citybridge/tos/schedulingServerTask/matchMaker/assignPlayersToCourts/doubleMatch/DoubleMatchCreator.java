@@ -7,7 +7,6 @@ import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.doubleStraight.DoubleStraightMatch;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.doubleMale.DoubleMaleMatch;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.doubleMix.DoubleMixMatch;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,21 +35,12 @@ public class DoubleMatchCreator {
                                   ) {
 
     int numberOfMatches = typeOfMatchList.size();
-    for (int i = 0; i < numberOfMatches; i++) {
 
-    TypeOfMatch typeOfMatch=  findPlayer1(playerList, courtList, assignedPlayersToCourtsList, typeOfMatchList);
-
-    boolean isMatchTypeLast = isMatchTypeLast(assignedPlayersToCourtsList, typeOfMatchList);
-
-    createSpecificDouble(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
-
-
-
-
-
-    }
-
-
+        for (int i = 0; i < numberOfMatches; i++) {
+            TypeOfMatch typeOfMatch=  findPlayer1(playerList, courtList, assignedPlayersToCourtsList, typeOfMatchList);
+            boolean isMatchTypeLast = isMatchTypeLast(assignedPlayersToCourtsList, typeOfMatchList);
+            createSpecificDouble(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
+        }
     }
 
 
@@ -98,14 +88,10 @@ public class DoubleMatchCreator {
                                         Event event) {
        boolean b = false;
 
-        if (typeOfMatch == TypeOfMatch.DOUBLE_MALE) {
-            b = doubleStraightMatch.createDoubleStraightMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
-        }
-            else if (typeOfMatch == TypeOfMatch.DOUBLE_FEMALE) {
-            b = doubleStraightMatch.createDoubleStraightMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
-        }
-            else if (typeOfMatch == TypeOfMatch.DOUBLE_MIX) {
-            b = doubleMixMatch.createDoubleMixMatch(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
+        if (typeOfMatch == TypeOfMatch.DOUBLE_MALE | typeOfMatch == TypeOfMatch.DOUBLE_FEMALE) {
+            b = doubleStraightMatch.createDoubleStraightMatch(playerList, assignedPlayersToCourtsList, isMatchTypeLast, event);
+        }  else if (typeOfMatch == TypeOfMatch.DOUBLE_MIX) {
+            b = doubleMixMatch.createDoubleMixMatch(playerList, assignedPlayersToCourtsList, isMatchTypeLast, event);
         }
                 else {
                     //throw exception
