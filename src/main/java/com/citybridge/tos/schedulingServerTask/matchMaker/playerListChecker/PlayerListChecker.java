@@ -26,7 +26,7 @@ public class PlayerListChecker {
                 fixBadSexDistribution();
             }
 
-            // if too few players and 1 leftover (no mexican possible)
+            // if too few players and 1 leftover (no single / mexican possible)
             if (nrOfPlayers < maxNrOfPlayers) {
                 int leftOver = (nrOfPlayers + 4) % 4;
                 if (leftOver == 1) {

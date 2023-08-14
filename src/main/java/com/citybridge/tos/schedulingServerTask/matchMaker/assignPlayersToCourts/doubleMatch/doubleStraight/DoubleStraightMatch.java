@@ -272,8 +272,7 @@ public class DoubleStraightMatch {
         assignStraightPlayer(p2, courtId, 2, assignedPlayersToCourtsList,  playerList, typeOfMatch);
         assignStraightPlayer(p3, courtId, 3, assignedPlayersToCourtsList,  playerList, typeOfMatch);
         assignStraightPlayer(p4, courtId, 4, assignedPlayersToCourtsList,  playerList, typeOfMatch);
-
-    }
+   }
 
     /**
      * #TODO exception handling
@@ -285,7 +284,6 @@ public class DoubleStraightMatch {
      * @param typeOfMatch
      */
     private void assignStraightPlayer(Player player, Long courtId, int position, List<AssignedPlayer> assignedPlayersToCourtsList, List<Player> playerList, TypeOfMatch typeOfMatch) {
-
 
         AssignedPlayer doublePlayer =new AssignedPlayer(
                 player.getPlayerId(),

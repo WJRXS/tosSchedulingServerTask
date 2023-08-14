@@ -46,8 +46,8 @@ public class AssignPlayersToCourts {
 
      * Action II:
      * Load event settings
-     * what %MIX has the organiser set? does the organiser want as many mixes as pissible (100%)?
-     * or the most straight matches (0 %)
+     * what %MIX has the organiser set? does the organiser want as many mixes as possible (100%)?
+     * or the most straight double matches (0 %)
      *
      *
      *
@@ -63,7 +63,7 @@ public class AssignPlayersToCourts {
      * - odd total players. If there is 1 female/male leftover, the lowest sex roll
      *   will be benched in processing.
      *  - If there are 3 leftovers, there is no bench ,
-     *   and thus a 3 man match will be assigned to the single court.
+     *   and thus a 3 man Mexican match will be assigned to the single court.
      *
      *
      * 1B) Nr Male & Nr Female - Mix & Non-Mix
@@ -90,7 +90,7 @@ public class AssignPlayersToCourts {
         /**
          * Check 0
          */
-        createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtIdList);
+        createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtIdList, playerBinList);
 
         /**
          * Action 1
@@ -167,7 +167,8 @@ public class AssignPlayersToCourts {
     private void createLeftOverMatch(Event event,
                                      List<Player> playerList,
                                      List<AssignedPlayer> assignedPlayersToCourtsList,
-                                     List<Court> courtList) {
+                                     List<Court> courtList,
+                                     List<Player> playerBinList) {
 
         int nrOfPlayers = playerList.size();
         int leftover = nrOfPlayers%4;
@@ -182,9 +183,11 @@ public class AssignPlayersToCourts {
         } else if (leftover == 3) {
             // MEXICAN
             mexicanMatchCreator.createMexicanMatch(playerList, assignedPlayersToCourtsList, courtList);
-        } else if (leftover == 0 | leftover == 4) {
-            // nothing
-        } else {
+        } else if (playerBinList.size() == 0 && (leftover == 0 | leftover == 4)) {
+            // CHECK FOR unballanced DOUBLE (FMMM) or (MFFF) MATCH (when the bench is zero)
+            // #TODO uballancedMatchCreator
+
+            } else {
             // throw exception
         }
   }
