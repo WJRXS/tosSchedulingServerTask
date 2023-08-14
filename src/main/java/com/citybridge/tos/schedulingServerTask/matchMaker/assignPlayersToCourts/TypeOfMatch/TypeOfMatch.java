@@ -5,5 +5,6 @@ public enum TypeOfMatch {
     MEXICAN,
     DOUBLE_MIX,
     DOUBLE_MALE,
-    DOUBLE_FEMALE
+    DOUBLE_FEMALE,
+    DOUBLE_UNBALANCED
 }
