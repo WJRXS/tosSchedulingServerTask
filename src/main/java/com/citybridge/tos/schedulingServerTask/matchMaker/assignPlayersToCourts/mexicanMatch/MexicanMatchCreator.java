@@ -77,13 +77,7 @@ public class MexicanMatchCreator {
             // add p1 to assignedPlayerList
             // remove p1 from playerList
             // find court &= remove court from courtList
-
-            // VOLUNTARY P1
-            boolean isThereAPlayer1WhoLikesMexican = findVoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList);
-            // INVOLUNTARY P1
-            if (!isThereAPlayer1WhoLikesMexican) { findInvoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList); }
-
-
+           boolean isThereAPlayer1WhoLikesMexican = findPlayer1(playerList,  courtList, assignedPlayersToCourtsList);
 
 
             // 1) Check
@@ -131,6 +125,23 @@ public class MexicanMatchCreator {
 
         }
 
+/**
+ * Find Player1
+ */
+        private boolean findPlayer1(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+
+
+
+            if (findVoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList)) {
+                return true;
+           }else {
+                findInvoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList);
+                return false;
+            }
+
+
+
+        }
 
 
     /**

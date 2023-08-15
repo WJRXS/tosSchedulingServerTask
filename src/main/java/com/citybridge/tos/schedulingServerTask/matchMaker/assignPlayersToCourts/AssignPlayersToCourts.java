@@ -8,6 +8,7 @@ import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.DoubleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.mexicanMatch.MexicanMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.singleMatch.SingleMatchCreator;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.unbalancedMatch.UnbalancedMatchCreator;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,18 @@ public class AssignPlayersToCourts {
     private final MexicanMatchCreator mexicanMatchCreator;
     private final TypeOfMatchListCreator typeOfMatchListCreator;
     private final DoubleMatchCreator doubleMatchCreator;
-
+    private final UnbalancedMatchCreator unbalancedMatchCreator;
     @Autowired
     public AssignPlayersToCourts(SingleMatchCreator singleMatchCreator,
                                  MexicanMatchCreator mexicanMatchCreator,
                                  TypeOfMatchListCreator typeOfMatchListCreator,
-                                 DoubleMatchCreator doubleMatchCreator) {
+                                 DoubleMatchCreator doubleMatchCreator,
+                                 UnbalancedMatchCreator unbalancedMatchCreator) {
         this.singleMatchCreator = singleMatchCreator;
         this.mexicanMatchCreator = mexicanMatchCreator;
         this.typeOfMatchListCreator = typeOfMatchListCreator;
         this.doubleMatchCreator = doubleMatchCreator;
+        this.unbalancedMatchCreator = unbalancedMatchCreator;
     }
 
 
@@ -186,7 +189,7 @@ public class AssignPlayersToCourts {
         } else if (playerBinList.size() == 0 && (leftover == 0 | leftover == 4)) {
             // CHECK FOR unballanced DOUBLE (FMMM) or (MFFF) MATCH (when the bench is zero)
             // #TODO unbalancedMatchCreator
-
+            unbalancedMatchCreator.createUnbalancedMatch(playerList, assignedPlayersToCourtsList, courtList);
             } else {
             // throw exception
         }

@@ -19,6 +19,7 @@ public class Player { //} implements Comparable<Player>{
     private boolean hasPlayedLeftOverMatch;
     private boolean wantToPlaySingle;
     private boolean wantToPlayMexican;
+    private boolean wantToPlayUnbalanced;
     private int roll = 0;
 
     // 1 CARPET,
@@ -150,6 +151,14 @@ public class Player { //} implements Comparable<Player>{
 
     public void setWantToPlayMexican(boolean wantToPlayMexican) {
         this.wantToPlayMexican = wantToPlayMexican;
+    }
+
+    public boolean isWantToPlayUnbalanced() {
+        return wantToPlayUnbalanced;
+    }
+
+    public void setWantToPlayUnbalanced(boolean wantToPlayUnbalanced) {
+        this.wantToPlayUnbalanced = wantToPlayUnbalanced;
     }
 
     public List<Long> getFriendIdList() {
