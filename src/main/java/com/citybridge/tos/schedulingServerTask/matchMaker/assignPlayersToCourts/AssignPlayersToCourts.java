@@ -187,9 +187,8 @@ public class AssignPlayersToCourts {
             // MEXICAN
             mexicanMatchCreator.createMexicanMatch(playerList, assignedPlayersToCourtsList, courtList);
         } else if (playerBinList.size() == 0 && (leftover == 0 | leftover == 4)) {
-            // CHECK FOR unballanced DOUBLE (FMMM) or (MFFF) MATCH (when the bench is zero)
-            // #TODO unbalancedMatchCreator
-            unbalancedMatchCreator.createUnbalancedMatch(playerList, assignedPlayersToCourtsList, courtList);
+            // UNBALANCED DOUBLE (FMMM) or (MFFF), when bench = zero.
+             unbalancedMatchCreator.createUnbalancedMatch(playerList, assignedPlayersToCourtsList, courtList);
             } else {
             // throw exception
         }

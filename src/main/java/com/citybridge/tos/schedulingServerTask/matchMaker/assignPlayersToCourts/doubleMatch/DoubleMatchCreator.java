@@ -78,7 +78,6 @@ public class DoubleMatchCreator {
 
     /**
      * calls the specific class needed to create the double
-     * #TODO female and male classes will be very similar. might combine to straight.
      * @param typeOfMatch
      */
    private boolean createSpecificDouble(List<Player> playerList,

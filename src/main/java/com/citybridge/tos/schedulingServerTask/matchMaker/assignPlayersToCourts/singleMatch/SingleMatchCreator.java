@@ -21,9 +21,6 @@ public class SingleMatchCreator {
      * GLOBAL METHOD: findplayer (matchtype matchtype, numberPlayer numberPlayer, playerlist playerlist.  assignedplayerlist assignedplayerlist, boolean voluntary)
      *
      */
-    // 0) Check
-    // check for sex distribution.
-    // is the single going to be mixed sex or non_mixed sex
 
 
     // 1) FIND player 1
@@ -33,7 +30,6 @@ public class SingleMatchCreator {
     // add p1 to assignedPlayerList
     // remove p1 from playerList
     // find court &= remove court!!! from courtList
-
 
 
     // 2) FIND player 2
@@ -48,66 +44,33 @@ public class SingleMatchCreator {
     /**
      * This method fills the assignedPlayersToCourtsList with 2 players on 1 court.
      * Diagram_SingleMatchCreator.png
+     *
      * @param playerList
      * @param assignedPlayersToCourtsList
      * @param courtList
      */
     public void createSingleMatch(List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList, List<Court> courtList) {
 
-        // 0) Check
-        // check for sex distribution.
-        // is the single going to be mixed sex or non_mixed sex
+        // 0) check for sex distribution: is the single going to be mixed sex or non_mixed sex
+        /**
+         * #TODO klopt nog niet. wat als je eigen wilt dat 2 mannen single doen, of 2 vrouwen?
+         * #TODO het kan namelijk het aantal Mix Doubles beinvloeden.
+         */
+
         boolean isSingleMixed = checkSexDistribution(playerList);
 
-
-
-
         // 1) FIND player 1
-        // VOLUNTARY: High roll player who likes single (court)
-        // or
-        // INVOLUNTARY: Lowest roll player(court)
-
-        // VOLUNTARY P1
-        boolean isThereAPlayer1WhoLikesSingle = findVoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList);
-        // INVOLUNTARY P1
-        if (!isThereAPlayer1WhoLikesSingle) { findInvoluntaryPlayer1(playerList,  courtList, assignedPlayersToCourtsList); }
+        findPlayer1(playerList, courtList, assignedPlayersToCourtsList);
 
         // 2) FIND player 2
-        // VOLUNTARY: (automaticly means p1 is also voluntary = strength check)
-        //
-        // or
-        // INVOLUNTARY: Lowest roll player (with or without strength check)
+        findPlayer2(playerList, courtList, assignedPlayersToCourtsList, isSingleMixed);
 
-        // VOLUNTARY P2
-        boolean player2Sex = getPlayer2Sex(isSingleMixed, assignedPlayersToCourtsList);
-
-        boolean isThereAPlayer2WhoLikesSingle = false;
-
-        if(isThereAPlayer1WhoLikesSingle) {
-            isThereAPlayer2WhoLikesSingle = findVoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList);
-        }
-            // INVOLUNTARY P2
-            if (!isThereAPlayer2WhoLikesSingle) {
-                findInvoluntaryPlayer2(player2Sex, playerList, assignedPlayersToCourtsList);
-            }
-
-      // #TODO make some final check if the single is really created.
-
-
-
-
-            }
-
-
-
-
-
-
+    }
 
     /**
      * --------- 0 --------------------
      * check for sex distribution.
-     * Assign opponent sex = X.
+     *
      * @param playerList
      * @return
      */
@@ -116,7 +79,7 @@ public class SingleMatchCreator {
         int maleCounter = 0;
         int femaleCounter = 0;
 
-        for(Player p: playerList) {
+        for (Player p : playerList) {
             if (p.isMaleSex()) {
                 maleCounter++;
             } else {
@@ -124,88 +87,117 @@ public class SingleMatchCreator {
             }
         }
 
-         if(maleCounter%2 == 0 && femaleCounter%2 == 0) {
-             isSexMix = false;
-         }
-         else if(maleCounter%2 !=0 && femaleCounter%2 !=0){
-             isSexMix = true;
-         }
-         else {
-             // throw exception
-         }
-       return isSexMix;
+        if (maleCounter % 2 == 0 && femaleCounter % 2 == 0) {
+            isSexMix = false;
+        } else if (maleCounter % 2 != 0 && femaleCounter % 2 != 0) {
+            isSexMix = true;
+        } else {
+            // throw exception
+        }
+        return isSexMix;
+    }
+
+    /**
+     * @param playerList
+     * @param courtList
+     * @param assignedPlayersToCourtsList
+     * @return
+     */
+    private boolean findPlayer1(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+
+        if (findVoluntaryPlayer1(playerList, courtList, assignedPlayersToCourtsList)) {
+            return true;
+        } else if (findInvoluntaryPlayer1(playerList, courtList, assignedPlayersToCourtsList)) {
+            return false;
+        } else {
+            // #TODO throw exception
+            return false;
+        }
     }
 
 
     /**
-     * FIND VOLUNTARY Player1
+     * VOLUNTARY: High roll player who likes single (court)
+     *
+     * @param playerList
+     * @param courtList
+     * @param assignedPlayersToCourtsList
+     * @return
      */
     private boolean findVoluntaryPlayer1(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList) {
 
-        outerloop: for(Player p:playerList){
-            if(p.isWantToPlaySingle()){
-                boolean singlePlayerIsMaleSex=p.isMaleSex();
+        outerloop:
+        for (Player p : playerList) {
+            if (p.isWantToPlaySingle()) {
+                boolean singlePlayerIsMaleSex = p.isMaleSex();
 
 
-                List<TypeOfCourt> courtPreference=p.getCourtPreference();
-                Long courtId = findCourtId(courtPreference,courtList);
+                List<TypeOfCourt> courtPreference = p.getCourtPreference();
+                Long courtId = findCourtId(courtPreference, courtList);
                 int position1 = 1;
 
-                AssignedPlayer singlePlayer1=new AssignedPlayer(p.getPlayerId(),
-                false,
-                courtId,
-                position1,
-                p.getRoll(),
-                TypeOfMatch.SINGLE
-                );
+                assignSinglePlayer(p, courtId, position1, assignedPlayersToCourtsList, playerList);
 
-                assignedPlayersToCourtsList.add(singlePlayer1);
-
-                playerList.remove(p);
 
                 return true;
-                }
             }
-    return false;
+        }
+        return false;
     }
 
     /**
-     * FIND INvoluntary Player1
+     * INVOLUNTARY: Lowest roll player (with or without strength check)
+     *
+     * @param playerList
+     * @param courtList
+     * @param assignedPlayersToCourtsList
+     * @return
      */
-        private void findInvoluntaryPlayer1(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList) {
-            int indexLowestRoll = playerList.size() -1;
-            Player p = playerList.get(indexLowestRoll);
+    private boolean findInvoluntaryPlayer1(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+        int indexLowestRoll = playerList.size() - 1;
+        Player p = playerList.get(indexLowestRoll);
 
-            List<TypeOfCourt> courtPreference=p.getCourtPreference();
-            Long courtId=findCourtId(courtPreference,courtList);
-            int position1 = 1;
+        List<TypeOfCourt> courtPreference = p.getCourtPreference();
+        Long courtId = findCourtId(courtPreference, courtList);
+        int position1 = 1;
 
-            AssignedPlayer singlePlayer1=new AssignedPlayer(p.getPlayerId(),
-                    false,
-                    courtId,
-                    position1,
-                    p.getRoll(),
-                    TypeOfMatch.SINGLE
-            );
-            assignedPlayersToCourtsList.add(singlePlayer1);
+        assignSinglePlayer(p, courtId, position1, assignedPlayersToCourtsList, playerList);
 
-            playerList.remove(p);
+        return true;
+    }
 
 
+    private boolean findPlayer2(List<Player> playerList, List<Court> courtList, List<AssignedPlayer> assignedPlayersToCourtsList, boolean isSingleMixed) {
 
+        boolean player2Sex = getPlayer2Sex(isSingleMixed, assignedPlayersToCourtsList);
+
+        if (findVoluntaryPlayer2(playerList, assignedPlayersToCourtsList, player2Sex)) {
+            return true;
+        } else if (findInvoluntaryPlayer2(playerList, assignedPlayersToCourtsList, player2Sex)) {
+            return false;
+        } else {
+            // #TODO throw exception
+            return false;
         }
+
+
+    }
+
 
     /**
      * find opponent gender
      */
     private boolean getPlayer2Sex(Boolean isSingleMixed, List<AssignedPlayer> assignedPlayersToCourtsList) {
 
-        int index = assignedPlayersToCourtsList.size() -1;
+        int index = assignedPlayersToCourtsList.size() - 1;
         boolean p1Sex = assignedPlayersToCourtsList.get(index).getSexMale();
 
         boolean p2Sex;
-        if (isSingleMixed) {p2Sex = !p1Sex;}
-        else {p2Sex = p1Sex;}
+        if (isSingleMixed) {
+            p2Sex = !p1Sex;
+        } else {
+            p2Sex = p1Sex;
+        }
 
         return p2Sex;
     }
@@ -215,147 +207,124 @@ public class SingleMatchCreator {
      * FIND VOLUNTARY Player2
      * #TODO consider dividing strength difference of friends by 2, to compete with non friend str difference.
      */
-    private boolean findVoluntaryPlayer2(Boolean p2Sex, List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+    private boolean findVoluntaryPlayer2(List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList, Boolean p2Sex) {
 
-    int index = assignedPlayersToCourtsList.size() -1;
-    Long player1Id = assignedPlayersToCourtsList.get(index).getPlayerId();
-    Double player1Strength = assignedPlayersToCourtsList.get(index).getStrength();
-    Double strengthDifference = 1.0; // #TODO get from event
-    Long courtId = assignedPlayersToCourtsList.get(index).getCourtId();
-    int position2 = 2;
+        int index = assignedPlayersToCourtsList.size() - 1;
+        Long player1Id = assignedPlayersToCourtsList.get(index).getPlayerId();
+        Double player1Strength = assignedPlayersToCourtsList.get(index).getStrength();
+        Double strengthDifference = 1.0; // #TODO get from event
+        Long courtId = assignedPlayersToCourtsList.get(index).getCourtId();
+        int position2 = 2;
 
 
-    List<Player> player2List = new ArrayList<>();
+        List<Player> player2List = new ArrayList<>();
         /**
          * make list of potentials. sort on strength. and next pick the closest strength.
          */
 
-        outerloop: for(Player p2:playerList){
-        // ADD any likePlaySingle & friend
-        if(p2.isWantToPlaySingle() && p2.getFriendIdList().contains(player1Id)){
-               player2List.add(p2);
-
+        outerloop:
+        for (Player p2 : playerList) {
+            // ADD any likePlaySingle & friend & P2Sex
+            if (p2.isWantToPlaySingle() && p2.getFriendIdList().contains(player1Id) && p2.isMaleSex() == p2Sex) {
+                player2List.add(p2);
             }
-        // ADD any likePlaySingle & similar strength.
-        else if(p2.isWantToPlaySingle()
-                && (p2.getPlayerStrength() <= (player1Strength +strengthDifference) && p2.getPlayerStrength() >= (player1Strength -strengthDifference))) {
+            // ADD any likePlaySingle & similar strength & p2Sex.
+            else if (p2.isWantToPlaySingle()
+                    && (p2.getPlayerStrength() <= (player1Strength + strengthDifference) && p2.getPlayerStrength() >= (player1Strength - strengthDifference))
+                    && p2.isMaleSex() == p2Sex) {
 
-           player2List.add(p2);
+                player2List.add(p2);
+            }
         }
-       }
 
-       // Sort list. last = smallest strength difference.
-       if (player2List.size() > 0) {
+        if (player2List.size() == 0) {
+            return false;
+        } else if (player2List.size() > 0) { // Sort list. last = smallest strength difference.
+            Collections.sort(player2List, new Comparator<Player>() {
+                @Override
+                public int compare(Player pA, Player pB) {
+                    return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
+                }
+            });
 
-           Collections.sort(player2List, new Comparator<Player>() {
-               @Override
-               public int compare(Player pA, Player pB) {
-                   return pA.getPlayerStrength() > pB.getPlayerStrength() ? -1 : pA.getPlayerStrength() == pB.getPlayerStrength() ? 0 : 1;
-               }
-           });
+            int index2 = player2List.size() - 1;
 
-       int index2 = player2List.size() -1;
+            assignSinglePlayer(player2List.get(index2), courtId, position2, assignedPlayersToCourtsList, playerList);
 
+            return true;
+        }
 
-           /**
-            * #TODO deze move herhaald zich, misschien een method voor maken?
-             */
-           AssignedPlayer singlePlayer2=new AssignedPlayer(player2List.get(index2).getPlayerId(),
-                   p2Sex,
-                   courtId,
-                   position2,
-                   player2List.get(index2).getRoll(),
-                   TypeOfMatch.SINGLE
-           );
-           assignedPlayersToCourtsList.add(singlePlayer2);
-           playerList.remove(player2List.get(index2));
-           return true;
-       }
-
-    return false;
+        return false;
     }
 
     /**
-     * FIND VOLUNTARY Player2
+     * FIND INVOLUNTARY Player2
      */
-    private void findInvoluntaryPlayer2(Boolean p2Sex, List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList) {
+    private boolean findInvoluntaryPlayer2(List<Player> playerList, List<AssignedPlayer> assignedPlayersToCourtsList, Boolean p2Sex) {
 
-        int indexP1 = assignedPlayersToCourtsList.size() -1;
+        int indexP1 = assignedPlayersToCourtsList.size() - 1;
         Long courtId = assignedPlayersToCourtsList.get(indexP1).getCourtId();
         int position2 = 2;
 
-        int lastIndex = playerList.size() -1;
+        int lastIndex = playerList.size() - 1;
+
 
         for (int i = lastIndex; i >= 0; i--) {
 
-           if(playerList.get(i).isMaleSex() == p2Sex) {
-               AssignedPlayer singlePlayer2=new AssignedPlayer(playerList.get(i).getPlayerId(),
-                       p2Sex,
-                       courtId,
-                       position2,
-                       playerList.get(i).getRoll(),
-                       TypeOfMatch.SINGLE
-               );
-               assignedPlayersToCourtsList.add(singlePlayer2);
-               playerList.remove(i);
+            if (playerList.get(i).isMaleSex() == p2Sex) {
+                assignSinglePlayer(playerList.get(i), courtId, position2, assignedPlayersToCourtsList, playerList);
+
+                return true;
+            } else {
+                // throw exception. no possible partners for single. #TODO set minimum event players?
             }
-           else {
-               // throw exception. no possible partners for single. #TODO set minimum event players?
-           }
-
         }
-       }
-
-    // 0)
-    // check for sex distribution.
-    // Assign opponent sex = X.
-
-    // 1)
-    // check for friends (X) who like single
-
-    // 2)
-    // check for anybody (X) who likes single
-
-    // 3)
-    // for lowest roll (X) similar strength.
-
-    // 4)
-    // assign
+        return true;
+    }
 
 
     /**
      * Util
-     * find a prefered court
+     * find a preferred court
      */
     private Long findCourtId(List<TypeOfCourt> courtPreference, List<Court> courtList) {
-       int sizeCourtList = courtList.size();
-        outerLoop: for(TypeOfCourt typeOfCourt: courtPreference) {
-           innerLoop: for(int i = 0; i<sizeCourtList; i++) {
-                if(typeOfCourt == courtList.get(i).getTypeOfCourt())  {
+        int sizeCourtList = courtList.size();
+        outerLoop:
+        for (TypeOfCourt typeOfCourt : courtPreference) {
+            innerLoop:
+            for (int i = 0; i < sizeCourtList; i++) {
+                if (typeOfCourt == courtList.get(i).getTypeOfCourt()) {
                     // MATCH!!!
-                Long courtId = courtList.get(i).getCourtId();
-                courtList.remove(i);
-                return courtId;
+                    Long courtId = courtList.get(i).getCourtId();
+                    courtList.remove(i);
+                    return courtId;
+                }
             }
-           }
-   }
-    // NO MATCH, something might have gone wrong, just take the first court.
+        }
+        // NO MATCH, something might have gone wrong, just take the first court.
         return courtList.get(0).getCourtId();
     }
 
     /**
-     * Util
-     * remove a selected court from the court list
-     * #TODO might be able to directly delete with courtId? courtList.remove(courtId)?
+     *
+     * @param player
+     * @param courtId
+     * @param position
+     * @param assignedPlayersToCourtsList
+     * @param playerList
      */
-    // private void deleteCourt(List<Court> courtList, Long courtId) {
-    //    for (Court c: courtList) {
-     //       if(c.getCourtId() == courtId) {
-      //          courtList.remove(c);
-      //          break;
-     //       }
-     //    }
+    private void assignSinglePlayer(Player player, Long courtId, int position, List<AssignedPlayer> assignedPlayersToCourtsList, List<Player> playerList) {
+        AssignedPlayer unbalancedPlayer =new AssignedPlayer(
+                player.getPlayerId(),
+                player.isMaleSex(),
+                courtId,
+                position,
+                player.getRoll(),
+                TypeOfMatch.SINGLE
+        );
 
-    //}
+        assignedPlayersToCourtsList.add(unbalancedPlayer);
+        playerList.remove(player);
+    }
 
 }

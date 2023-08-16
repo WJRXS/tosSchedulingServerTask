@@ -87,11 +87,10 @@ private boolean findVoluntaryPlayer1(Boolean isSexMale, List<Player> playerList,
     outerloop: for (Player unbalancedPlayer1: playerList) {
         if (unbalancedPlayer1.isMaleSex() == isSexMale && unbalancedPlayer1.isWantToPlayUnbalanced()) {
             List<TypeOfCourt> courtPreference = unbalancedPlayer1.getCourtPreference();
-            Long courtId=findCourtId(courtPreference,courtList);
+            Long courtId = findCourtId(courtPreference,courtList);
             int position1 = 1;
 
          assignUnbalancedPlayer(unbalancedPlayer1, courtId, position1,assignedPlayersToCourtsList, playerList);
-         deleteCourt(courtList, courtId);
          return true;
         }
     }
@@ -114,7 +113,6 @@ private boolean findVoluntaryPlayer1(Boolean isSexMale, List<Player> playerList,
                 Long courtId=findCourtId(courtPreference,courtList);
                 int position1 = 1;
                 assignUnbalancedPlayer(unbalancedPlayer1, courtId, position1, assignedPlayersToCourtsList, playerList);
-                deleteCourt(courtList, courtId);
                 return true;
             }
         }
@@ -247,20 +245,5 @@ private void findPlayer234(Boolean isSexMale, List<Player> playerList, List<Assi
         return courtList.get(0).getCourtId();
     }
 
-    /**
-     * Util
-     * remove a selected court from the court list
-     * #TODO might be able to directly delete with courtId? courtList.remove(courtId)?
-     */
-    private void deleteCourt(List<Court> courtList, Long courtId) {
-        for (Court c: courtList) {
-            if(c.getCourtId() == courtId) {
-                courtList.remove(c);
-                break;
-            }
-        }
-
-    }
-
-    }
+  }
 
