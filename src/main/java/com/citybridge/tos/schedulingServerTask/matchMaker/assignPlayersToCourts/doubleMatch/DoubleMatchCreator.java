@@ -33,7 +33,6 @@ public class DoubleMatchCreator {
                                   List<Player> playerList,
                                   Event event
                                   ) {
-
     int numberOfMatches = typeOfMatchList.size();
 
         for (int i = 0; i < numberOfMatches; i++) {
@@ -42,7 +41,6 @@ public class DoubleMatchCreator {
             createSpecificDouble(playerList, assignedPlayersToCourtsList, typeOfMatch, isMatchTypeLast, event);
         }
     }
-
 
     /**
      * FIND Player1
@@ -78,7 +76,7 @@ public class DoubleMatchCreator {
 
     /**
      * calls the specific class needed to create the double
-     * @param typeOfMatch
+     0* @param typeOfMatch
      */
    private boolean createSpecificDouble(List<Player> playerList,
                                      List<AssignedPlayer> assignedPlayersToCourtsList,
@@ -86,7 +84,6 @@ public class DoubleMatchCreator {
                                      boolean isMatchTypeLast,
                                         Event event) {
        boolean b = false;
-
         if (typeOfMatch == TypeOfMatch.DOUBLE_MALE | typeOfMatch == TypeOfMatch.DOUBLE_FEMALE) {
             b = doubleStraightMatch.createDoubleStraightMatch(playerList, assignedPlayersToCourtsList, isMatchTypeLast, event);
         }  else if (typeOfMatch == TypeOfMatch.DOUBLE_MIX) {
@@ -95,7 +92,6 @@ public class DoubleMatchCreator {
                 else {
                     //throw exception
         }
-
                 return b;
    }
 
