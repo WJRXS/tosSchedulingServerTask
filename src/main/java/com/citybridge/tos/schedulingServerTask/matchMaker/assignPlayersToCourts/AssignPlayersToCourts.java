@@ -42,44 +42,12 @@ public class AssignPlayersToCourts {
 
 
     /**
-     * Action I:
-     * Many factors have to be considered.
-     * first of all what kind of TOS?
-     TosType tosType =
-
-     * Action II:
-     * Load event settings
-     * what %MIX has the organiser set? does the organiser want as many mixes as possible (100%)?
-     * or the most straight double matches (0 %)
-     *
-     *
-     *
-     * Check1:
-     * 1A) Nr courts [vs] Nr players?
-     * players < courts: create single / mexican (possible 1 on bench)
-     * players = courts: perfect, might end up with weird MFFF or FMMM double
-     * players > courts: standard scenario: benched players.
-     *
-     * #Old Notes 1A
-     * female/male divisions: The Double matches have priority, and thus if needed,
-     * - the single will consist out of a man and a female: BattleOfTheSexes.
-     * - odd total players. If there is 1 female/male leftover, the lowest sex roll
-     *   will be benched in processing.
-     *  - If there are 3 leftovers, there is no bench ,
-     *   and thus a 3 man Mexican match will be assigned to the single court.
-     *
-     *
-     * 1B) Nr Male & Nr Female - Mix & Non-Mix
-     * Create a list of match type(mix double, f double, m double)
-     *
-     * 1c)
-     * start creating those matches and add them to the assignedplayercourtlist
-     *
-     *
-
-     *
-     *
-     *
+     *2A
+     * Assign the players to
+     * - a specific court.
+     * - a position (and thus partner and opponent(s) )
+     * This list determines the matches in a round in an event.
+     * convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
      */
 
     public List<AssignedPlayer> getAssignedPlayersToCourtsList(Event event, List<Court> courtIdList, List<Player> playerList, List<Player> playerBinList) {
@@ -87,29 +55,26 @@ public class AssignPlayersToCourts {
 
         /**
          * #TODO implement different tostypes, like all singles.
+         * EVENT: Type of TOS setting
          */
         TosType tosType = event.getTosType();
         //if (tosType == TosType.DOUBLE) {}
+
         /**
-         * Check 0
+         * Check if a leftover match is needed.
          */
         createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtIdList, playerBinList);
 
         /**
          * Action 1
-         * get the Mix % from event
-         * determine the number of Mix Doubles, and thus, Male doubles and Female Doubles.
+         * Load event settings: get the Mix % from event
+         * determine: the number of Mix Doubles, and thus, Male doubles and Female Doubles.
          * Make a list of the MatchTypes.
-         *
-         *
-         * // EVENT: Type of TOS setting
-         * // private TosType tosType = TosType.DOUBLE;  // focus on double.
-         * // private int mixVersusStraight = 0; // 0 most mix matches, 100 for most straight matches.
          */
         List<TypeOfMatch> typeOfMatchList = typeOfMatchListCreator.createTypeOfMatchList(event, playerList);
 
         /**
-         * Action2
+         * Action 2
          * use the matchlist to create the actual doubles.
          */
         doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtIdList, playerList, event);

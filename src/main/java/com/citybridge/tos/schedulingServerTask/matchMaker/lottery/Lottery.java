@@ -10,23 +10,31 @@ import java.util.List;
 
 
 /** ---- 1A----- Lottery
- * add roll to players
- * sort list comparable to roll.
+ * Load event settings & give all players an integer lottery Roll.
+ * This roll determines:
+ * 1) who plays and who is benched.
+ * 2) Players with High rolls have a better chance to play
+ * - their preferred match type
+ * - on their preferred courts
+ * - with their friends.
+ *
+ * The roll is modified when:
+ * - Bench: The Player's last active round had status "benched". With this compensation the player has no significant chance
+ * to be benched twice in a row.
+ * - New Players:
+ * To keep a fresh dynamic and stimulate "late comers" rather then "no shows": and organiser can enhance the chance that players arriving
+ * at the club will immediately play.
+ * - leftover match
+ * Some players get bad experience from playing a non double match. This can be avoided when mostly volunteers play these matches.
+ * The players who play these undesired matches get a reward; they are less likely to be benched in next round.
  */
 
 
 @Service
 public class Lottery {
 
-
-        // player list
-        // input: singUpList<Players>
-        // action:  roll. & add event factors
-        // action: list<AssignedPlayers> sorted by roll
-        // return list  --- no need.
-
         public void addRoll(List<Player> playerList, Event event) {
-               // Lottery Settings:
+               // Lottery Settings from event set by organiser:
                final int benchCompensation = event.getBenchCompensation();
                final int newPlayersPlayImmediately = event.getNewPlayersPlayImmediately();
                final int leftoverMatchCompensation = event.getLeftoverMatchCompensation();
@@ -46,12 +54,4 @@ public class Lottery {
                        }
                });
         }
-
-
-
-
-
-
-
-
 }

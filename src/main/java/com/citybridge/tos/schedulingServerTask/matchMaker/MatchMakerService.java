@@ -30,69 +30,55 @@ public class MatchMakerService {
     }
 
 
-    /**
-     * Split the signed up players into
-     * - player who are playing.
-     * - players who are benched.
+    /** Each tennis tos event will constitute out of multiple rounds wherein
+     * players play tennis matches with and against other players. For each round a new
+     * schedule will be made. During the event, payers will interact with many different players on different courts.
+     * To increase the chance on a positive experience, many factors need to be taken into account:
+     * A player needs to:
+     * - face similar strength opponents.
+     * - play a fair amount of matches.
+     * - occasionally play with/against friends if so desired.
      *
-     * Many factors have to be considered.
+     * A player should not:
+     * - frequently face weak opponents.
+     * - be benched alot more than other players.
+     *
+     * The balance of all these factors is what makes or breaks an event.
+     * Hence it will take alot of code. On top of that, the rare circumstances,
+     * especially the makeup of the players, expand the code rapidly.
+     *
      * first of all what kind of TOS?
-     * Only setting for now, will be [Double Matches, both mixed sex and same sex].
-     *
-     * Action I:
-     * Load event settings
-     *
-     * Action II:
-     * all players get an integer lottery Roll.
-     *
-     * Action III:
-     * a) fill all available spots with the highest rolls.
-     * (assignedPlayerList)
-     * b) if leftover, then they go into the (playerBinList).
-     *
-     * Check1:
-     * 1A) courts => players?
-     * Create Matches, Fill courts with double, until 3 (mexican),  2 (single), 1 (bench) players are left.
-     * leftovers sex is not considered.
-     *
-     * 1B) courts x 4 < players?
-     * there will be a bench.
-     * When there are more players then courts available, low roll players will be
-     * benched. Allowances are made so abit higher rolls might be benched for the
-     * greater cause: male / female distribution.
-     *
-     * Check sex distribution.
-     *
-     *      * female/male divisions: The Double matches have priority, and thus if needed,
-     *      * the single will consist out of a man and a female: BattleOfTheSexes.
-     *      *
-     *      * odd total players. If there is 1 female/male leftover, the lowest sex roll
-     *      * will be benched in processing.
-     *      *
-     *      * If there are 3 leftovers, there is no bench , to fill a 3 player Mexican to a
-     *      * 4man double. and thus a 3 man match will be assigned to the single court.
+     * The event could host only singles, or only male doubles and females doubles.
+     * Only setting for now, will be Double Matches:
+     * The emphasis will lay on both mixed gender and same gender double matches.
      */
     public List<AssignedPlayer> getAssignedPlayerList(Event event, List<Court> courtIdList, List<Player> playerList) {
 
         /** ---- 1A----- Lottery
-         * ADD roll to players
-         * sort list comparable to roll.
+         * Load event settings & give all players an integer lottery Roll.
          */
 
         lottery.addRoll(playerList, event);
 
         /**
          *  --- 1B -------------
-         *  check for surplus and sexes.
-         *   divide into playerlist & playerBinList.
+         *  Check if
+         * - The number of players reach maximum capacity of tennis courts
+         * - divide players among a benched list & a playing list
+         * - Adjustments will be made for gender distribution among lists
+         * whilst taking into account the lottery scores players have been given.
+         *  check for surplus and and gender balance.
          */
 
-        List<Player> playerBinList = playerListChecker.checkForBadConfiguration(playerList, courtIdList.size());
+        List<Player> playerBinList = playerListChecker.getPlayerBinList(playerList, courtIdList.size());
 
 
         /**
          *  ------ 1C --------
          * Adjust player settings
+         * Fill the database with data about player activity: Playing or Benched, so that information
+         * can be taken into account for the next round.
+         *
          * Set playerlist (now effectively assigned players to a match) status: not benched.
          * Set binlist players status: benched.
          */
@@ -101,20 +87,18 @@ public class MatchMakerService {
 
 
         /**
+         * 2A
+         * Assign the players to
+         * - a specific court.
+         * - a position (and thus partner and opponent(s) )
+         * This list determines the matches in a round in an event.
+         *
+        *  convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
         *
-        * 2A
-        *  next try to convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
-        *
-         *  players assigned to courts
-         *  players assigned to bench
-         *  List [playerId][CourtId][Position][Roll]  CourtId -1 = benched    Position: 1234 (13vs24)
-         *  List [Long][Long][int][int]
-         *  ********  class List [AssignedPlayer]??   *****************
-         */
+        */
         List<AssignedPlayer> assignedPlayerList = assignPlayersToCourts.getAssignedPlayersToCourtsList(event, courtIdList, playerList, playerBinList);
 
          /**
-         *
          * 2B
          * return the (assignedPlayersList)
          *

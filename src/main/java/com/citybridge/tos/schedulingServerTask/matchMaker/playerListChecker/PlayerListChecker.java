@@ -2,6 +2,8 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.playerListChecker;
 
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,34 +11,42 @@ import java.util.List;
 @Service
 public class PlayerListChecker {
 
-    List<Player> playerList;
-    List<Player> playerBinList;
-    int nrOfCourts;
+    /**
+     * --- 1B -------------
+     * Check if
+     * The number of players reach maximum capacity of tennis courts
+     * divide players among a benched list & a playing list
+     * Adjustments will be made for gender distribution among lists
+     * whilst taking into account the lottery scores players have been given.
+     * check for surplus and gender balance.
+     * @param playerList
+     * @param nrOfCourts
+     * @return
+     */
+    public List<Player> getPlayerBinList(List<Player> playerList, int nrOfCourts) {
 
-        public List<Player> checkForBadConfiguration(List<Player> playerList, int nrOfCourts) {
-            this.playerList = playerList;
-            this.nrOfCourts = nrOfCourts;
+            List<Player> playerBinList = new ArrayList<>();
 
             int nrOfPlayers = playerList.size();
             int maxNrOfPlayers = nrOfCourts * 4;
 
             // if too many players
             if (nrOfPlayers > maxNrOfPlayers) {
-                moveSurplusPlayersToTrashBin();
-                fixBadSexDistribution();
+                moveSurplusPlayersToTrashBin(playerList, playerBinList, nrOfCourts);
+                fixBadSexDistribution(playerList, playerBinList, nrOfCourts);
             }
 
-            // if too few players and 1 leftover (no single / mexican possible)
+            // if too few players and 1 leftover (no "leftover match" possible)
             if (nrOfPlayers < maxNrOfPlayers) {
                 int leftOver = (nrOfPlayers + 4) % 4;
                 if (leftOver == 1) {
-                    checkFemaleMaleAndRemoveLowestRoll();
+                    checkFemaleMaleAndRemoveLowestRoll(playerList, playerBinList);
                 }
             }
             return playerBinList;
     }
 
-    private void moveSurplusPlayersToTrashBin() {
+    private void moveSurplusPlayersToTrashBin(List<Player> playerList, List<Player> playerBinList, int nrOfCourts) {
         /**
          * #TODO Check if you have even number of sexes. put the removed player rolls in
          * a trash bin if sexes are uneven, check1 what sex is bottom list? is there an
@@ -73,7 +83,7 @@ public class PlayerListChecker {
     });
 }
 
-    private void fixBadSexDistribution() {
+    private void fixBadSexDistribution(List<Player> playerList, List<Player> playerBinList, int nrOfCourts) {
 
         /** [MALE - FEMALE]
          * [0-4] [4-0] sameSex ---OR--- [2-2] mix
@@ -204,10 +214,10 @@ public class PlayerListChecker {
 
 
     /** scenario: TOO FEW PLAYERS and leftover = 1
-     * check if a female or male need to be removed to fix configuration.
+     * check if it is a female or male who needs to be removed to fix configuration.
      * remove lowest rolled female or male.
      */
-    private void checkFemaleMaleAndRemoveLowestRoll() {
+    private void checkFemaleMaleAndRemoveLowestRoll(List<Player> playerList, List<Player> playerBinList) {
         int nrOfmalesCounter = 0;
         int nrOfFemalesCounter = 0;
 
@@ -247,7 +257,4 @@ public class PlayerListChecker {
             }
         }
     }
-
-
-
 }

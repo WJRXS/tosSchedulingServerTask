@@ -31,7 +31,7 @@ public class DiceRoller {
 
 
         int strengthInt = (int) (Math.random() * range + min);
-        double roundedStrength = (double)strengthInt/10;
+        double roundedStrength = (double) strengthInt/10;
         //		double strengthInt =  (Math.random() * range + min);
         //		double strengthDouble = (double) (strengthInt / 10);
 
