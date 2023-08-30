@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.unbalancedMatch;
+package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.leftOverMatch.unbalancedMatch;
 
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;

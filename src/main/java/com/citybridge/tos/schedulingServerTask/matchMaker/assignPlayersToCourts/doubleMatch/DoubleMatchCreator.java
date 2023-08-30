@@ -33,7 +33,8 @@ public class DoubleMatchCreator {
                                   List<Player> playerList,
                                   Event event
                                   ) {
-    int numberOfMatches = typeOfMatchList.size();
+
+        int numberOfMatches = typeOfMatchList.size();
 
         for (int i = 0; i < numberOfMatches; i++) {
             TypeOfMatch typeOfMatch=  findPlayer1(playerList, courtList, assignedPlayersToCourtsList, typeOfMatchList);
@@ -76,7 +77,7 @@ public class DoubleMatchCreator {
 
     /**
      * calls the specific class needed to create the double
-     0* @param typeOfMatch
+     * @param typeOfMatch
      */
    private boolean createSpecificDouble(List<Player> playerList,
                                      List<AssignedPlayer> assignedPlayersToCourtsList,
@@ -141,9 +142,11 @@ public class DoubleMatchCreator {
 
     /**
      * Util
-     * find out if the MatchType is the last of its type,
-     * AND
-     * the number of player configuration is limited by few players remaining.
+     * find out if the possible player configurations are limited because
+     * - the MatchType is the last of its type,
+     * - there are only a few players remaining in the player list.
+     *
+     * When this is the case, extra attention must be directly at the strength balance of the match.
      */
     private boolean isMatchTypeLast(List<AssignedPlayer> assignedPlayersToCourtsList, List<TypeOfMatch> typeOfMatchList) {
         int index = assignedPlayersToCourtsList.size();

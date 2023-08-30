@@ -40,7 +40,7 @@ public class MatchMakerService {
      * - occasionally play with/against friends if so desired.
      *
      * A player should not:
-     * - frequently face weak opponents.
+     * - frequently face relatively weak or strong opponents.
      * - be benched alot more than other players.
      *
      * The balance of all these factors is what makes or breaks an event.

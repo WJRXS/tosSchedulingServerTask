@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.mexicanMatch;
+package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.leftOverMatch.mexicanMatch;
 
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
