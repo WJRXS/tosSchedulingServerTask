@@ -1,4 +1,4 @@
-package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch;
+package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.typeOfMatch;
 
 public enum TypeOfMatch {
     SINGLE,

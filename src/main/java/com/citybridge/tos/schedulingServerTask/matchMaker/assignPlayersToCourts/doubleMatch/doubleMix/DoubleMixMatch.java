@@ -2,7 +2,7 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.AssignedPlayer;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.typeOfMatch.TypeOfMatch;
 import com.citybridge.tos.schedulingServerTask.player.Player;
 import org.springframework.stereotype.Service;
 

@@ -3,8 +3,8 @@ package com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts
 import com.citybridge.tos.schedulingServerTask.court.Court;
 import com.citybridge.tos.schedulingServerTask.event.Event;
 import com.citybridge.tos.schedulingServerTask.event.TosType;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatchListCreator;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.typeOfMatch.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.typeOfMatch.TypeOfMatchListCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.doubleMatch.DoubleMatchCreator;
 import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.leftOverMatch.LeftOverMatchCreator;
 import com.citybridge.tos.schedulingServerTask.player.Player;
@@ -45,7 +45,7 @@ public class AssignPlayersToCourts {
      * convert (playerlist) & (playerBinList) --into-> (assignedPlayerList)
      */
 
-    public List<AssignedPlayer> getAssignedPlayersToCourtsList(Event event, List<Court> courtIdList, List<Player> playerList, List<Player> playerBinList) {
+    public List<AssignedPlayer> getAssignedPlayersToCourtsList(Event event, List<Court> courtList, List<Player> playerList, List<Player> playerBinList) {
         List<AssignedPlayer> assignedPlayersToCourtsList = new ArrayList<AssignedPlayer>();
 
         /**
@@ -58,7 +58,7 @@ public class AssignPlayersToCourts {
         /** Action 1:
          * Check if a leftover match is needed.
          */
-        leftOverMatchCreator.createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtIdList, playerBinList);
+        leftOverMatchCreator.createLeftOverMatch(event, playerList, assignedPlayersToCourtsList, courtList, playerBinList);
 
 
         /**
@@ -73,7 +73,7 @@ public class AssignPlayersToCourts {
          * Action 3:
          * use the list of matches to create the double matches.
          */
-        doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtIdList, playerList, event);
+        doubleMatchCreator.createDoubleMatch(assignedPlayersToCourtsList, typeOfMatchList, courtList, playerList, event);
 
         /**
          * Action 4:

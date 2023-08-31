@@ -73,7 +73,7 @@ public class LeftOverMatchCreator {
     public void createLeftOverMatch(Event event,
                                      List<Player> playerList,
                                      List<AssignedPlayer> assignedPlayersToCourtsList,
-                                     List<Court> courtIdList,
+                                     List<Court> courtList,
                                      List<Player> playerBinList) {
 
         int nrOfPlayers = playerList.size();
@@ -84,14 +84,14 @@ public class LeftOverMatchCreator {
             //throw exception
         } else if(leftover == 2) {
             // SINGLE
-            singleMatchCreator.createSingleMatch(playerList, assignedPlayersToCourtsList, courtIdList);
+            singleMatchCreator.createSingleMatch(playerList, assignedPlayersToCourtsList, courtList);
 
         } else if (leftover == 3) {
             // MEXICAN
-            mexicanMatchCreator.createMexicanMatch(playerList, assignedPlayersToCourtsList, courtIdList);
+            mexicanMatchCreator.createMexicanMatch(playerList, assignedPlayersToCourtsList, courtList);
         } else if (playerBinList.size() == 0 && (leftover == 0 | leftover == 4)) {
             // UNBALANCED DOUBLE (FMMM) or (MFFF), when bench = zero.
-            unbalancedMatchCreator.createUnbalancedMatch(playerList, assignedPlayersToCourtsList, courtIdList);
+            unbalancedMatchCreator.createUnbalancedMatch(playerList, assignedPlayersToCourtsList, courtList);
         } else {
             // throw exception
         }

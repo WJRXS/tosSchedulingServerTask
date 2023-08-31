@@ -18,4 +18,4 @@ public enum TypeOfCourt {
      public int getValue() { return value; }
 }
 
-}
+

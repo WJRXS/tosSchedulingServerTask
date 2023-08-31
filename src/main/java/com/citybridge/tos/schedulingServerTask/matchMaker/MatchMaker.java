@@ -20,7 +20,7 @@ public class MatchMaker {
     }
 
 
-    public void createMatch(Event event, List<Court> courtIdList, List<Player> playerList) {
+    public void createMatch(Event event, List<Court> courtList, List<Player> playerList) {
 // #TODO
 
 
@@ -34,7 +34,7 @@ public class MatchMaker {
          * List [Long][Long][int][int]
          * returns List<AssignedPlayer>
          */
-        List<AssignedPlayer> assignedPlayerList = matchMakerService.getAssignedPlayerList(event, courtIdList, playerList);
+        List<AssignedPlayer> assignedPlayerList = matchMakerService.getAssignedPlayerList(event, courtList, playerList);
 
 
 

@@ -1,7 +1,7 @@
 package com.citybridge.tos.schedulingServerTask.player;
 
 import com.citybridge.tos.schedulingServerTask.court.TypeOfCourt;
-import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.TypeOfMatch.TypeOfMatch;
+import com.citybridge.tos.schedulingServerTask.matchMaker.assignPlayersToCourts.typeOfMatch.TypeOfMatch;
 
 import java.util.List;
 
