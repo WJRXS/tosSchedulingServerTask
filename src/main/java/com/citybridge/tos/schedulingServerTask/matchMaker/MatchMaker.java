@@ -38,22 +38,8 @@ public class MatchMaker {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-        //     List<Player> assignedPlayerList = matchRound.executeMatchMaker(eventVariables, playerList, courtList);
-
-
-
         /** ----- 3 -----
+         * #TODO
          * takes List<AssignedPlayer> and fills the database with
          * match'es: players assigned to courts  [(matchId) eventId courtId roundNr StartTime playerId1 playerId2 playerId3 playerId4]
          * Bench'es : players assigned to bench [(benchId) eventId roundNr playerId]
@@ -65,6 +51,7 @@ public class MatchMaker {
 
 
         /** ----- 4 -----
+         * #TODO
          * notifies clients of the created match round
          *
          * @param eventId
